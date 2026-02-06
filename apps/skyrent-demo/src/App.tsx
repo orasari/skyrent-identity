@@ -1,7 +1,17 @@
 import { useState } from 'react';
+import { SelfieCapture } from '@skyrent/identity-sdk';
 
 function App() {
-  const [step, _setStep] = useState<'browse' | 'verify' | 'checkout'>('browse');
+  const [selfieData, setSelfieData] = useState<string | null>(null);
+
+  const handleSelfieCapture = (imageData: string) => {
+    console.log('Selfie captured!', imageData.substring(0, 50) + '...');
+    setSelfieData(imageData);
+  };
+
+  const handleError = (error: Error) => {
+    console.error('Selfie capture error:', error);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -14,20 +24,33 @@ function App() {
 
       <main className="container mx-auto p-8">
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4">Current Step: {step}</h2>
+          <h2 className="text-2xl font-semibold mb-6">Test: SelfieCapture Component</h2>
 
-          <div className="space-y-4">
-            <p className="text-gray-600">Demo app successfully linked to @skyrent/identity-sdk!</p>
-
-            <div className="bg-green-50 border border-green-200 rounded p-4">
-              <p className="text-green-800 font-medium">✅ Setup Complete</p>
-              <ul className="mt-2 text-sm text-green-700 space-y-1">
-                <li>• Workspace dependency working</li>
-                <li>• TypeScript types imported from SDK</li>
-                <li>• Ready to build components</li>
-              </ul>
-            </div>
+          {/* SelfieCapture Test */}
+          <div className="mb-8">
+            <h3 className="text-xl font-medium mb-4">Identity Verification - Selfie</h3>
+            <SelfieCapture onCapture={handleSelfieCapture} onError={handleError} />
           </div>
+
+          {/* Display captured selfie */}
+          {selfieData && (
+            <div className="mt-8">
+              <h3 className="text-xl font-medium mb-4">Captured Selfie Preview:</h3>
+              <div className="max-w-md mx-auto">
+                <img
+                  src={selfieData}
+                  alt="Captured selfie"
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded">
+                  <p className="text-green-800 font-medium">✅ Selfie captured successfully!</p>
+                  <p className="text-sm text-green-700 mt-1">
+                    Image data: {selfieData.substring(0, 60)}...
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
