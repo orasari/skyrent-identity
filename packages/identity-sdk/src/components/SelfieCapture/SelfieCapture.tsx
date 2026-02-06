@@ -36,11 +36,8 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   // Auto-start camera on mount
   useEffect(() => {
     startCamera();
-    return () => stopCamera(); // selfnote: to avoid memory//batterly leaks / cleanup
-    // selfnote: eslit to avoid stale clousures. (they're not in the dept array. Safe in this case: 
-    // cuz they come from useCamera, they are stable because we don't recreate the hoook.)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => stopCamera();
+  }, [startCamera, stopCamera]);
 
   const handleCapture = () => {
     const imageData = captureImage();
@@ -68,7 +65,6 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
       {/* Video/Preview Container */}
       <div style={styles.videoContainer}>
         {/* Live camera feed - always render to ensure ref is available */}
-        {/* issue with not getting this to ref was because of conditional rendering here? */}
         <video
           ref={videoRef}
           style={{

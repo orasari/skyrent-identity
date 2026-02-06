@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CameraError, CameraState } from './types';
 
 interface UseCameraReturn {
@@ -11,9 +11,11 @@ interface UseCameraReturn {
   retake: () => void;
 }
 
-export const useCamera = (
-  onError?: (error: Error) => void
-): UseCameraReturn => {
+/**
+ * Manages camera lifecycle and selfie capture state.
+ * Returns refs for video/canvas along with camera controls.
+ */
+export const useCamera = (onError?: (error: Error) => void): UseCameraReturn => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -25,14 +27,23 @@ export const useCamera = (
     error: null,
   });
 
-  const handleError = (message: string) => {
+  /**
+   * Update error state and forward to caller. 
+   */
+  const handleError = useCallback(
+    (message: string) => {
     setState((prev) => ({ ...prev, error: message, isLoading: false }));
-    if (onError) {
-      onError(new Error(message));
-    }
-  };
+      if (onError) {
+        onError(new Error(message));
+      }
+    },
+    [onError]
+  );
 
-  const startCamera = async () => {
+  /**
+   * Request camera access and attach the stream to the video element.
+   */
+  const startCamera = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     // Check if getUserMedia is supported
@@ -54,8 +65,8 @@ export const useCamera = (
       streamRef.current = stream;
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream; // selfnote: CONNECT the media stream from getUserMedia to my video element to play the live camera feed
-        
+        videoRef.current.srcObject = stream;
+
         // Add event listener for when video can play
         const handleCanPlay = () => {
           setState({
@@ -95,9 +106,12 @@ export const useCamera = (
         handleError(CameraError.GENERIC);
       }
     }
-  };
+  }, [handleError]);
 
-  const stopCamera = () => {
+  /**
+   * Stop all media tracks and reset local state.
+   */
+  const stopCamera = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -113,8 +127,11 @@ export const useCamera = (
       isCaptured: false,
       error: null,
     });
-  };
+  }, []);
 
+  /**
+   * Capture the current video frame as a base64 image.
+   */
   const captureImage = (): string | null => {
     if (!videoRef.current || !canvasRef.current) {
       return null;
@@ -136,13 +153,16 @@ export const useCamera = (
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Convert the canvas to a base64 encoded image data URL
-    const imageData = canvas.toDataURL('image/jpeg', 0.92); 
+    const imageData = canvas.toDataURL('image/jpeg', 0.92);
 
-    setState((prev) => ({ ...prev, isCaptured: true, isStreaming: false }));x
+    setState((prev) => ({ ...prev, isCaptured: true, isStreaming: false }));
 
     return imageData;
   };
 
+  /**
+   * Reset state for another capture attempt.
+   */
   const retake = () => {
     setState((prev) => ({ ...prev, isCaptured: false, isStreaming: true }));
   };
@@ -152,7 +172,7 @@ export const useCamera = (
     return () => {
       stopCamera();
     };
-  }, []);
+  }, [stopCamera]);
 
   return {
     videoRef,
