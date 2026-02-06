@@ -31,6 +31,26 @@ pnpm --filter skyrent-demo dev
 
 The demo application will be available at `http://localhost:5173`
 
+### SDK Quick Start
+
+Install the SDK (consumer apps):
+
+```bash
+pnpm add @skyrent/identity-sdk
+```
+
+Basic usage:
+
+```tsx
+import { SelfieCapture } from '@skyrent/identity-sdk';
+
+export function VerificationStep() {
+  return <SelfieCapture onCapture={(image) => console.log(image)} />;
+}
+```
+
+Note: Camera access requires HTTPS in production (localhost is exempt).
+
 ### Building for Production
 
 ```bash
