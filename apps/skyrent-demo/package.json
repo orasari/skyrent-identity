@@ -1,0 +1,33 @@
+{
+  "name": "skyrent-demo",
+  "version": "0.1.0",
+  "description": "Drone rental application demonstrating @skyrent/identity-sdk integration",
+  "private": true,
+  "license": "MIT",
+  "author": "Mina Stankovic <stankovicd.mina@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orasari/skyrent-identity"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@skyrent/identity-sdk": "workspace:*",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

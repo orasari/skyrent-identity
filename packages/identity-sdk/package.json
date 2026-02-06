@@ -1,0 +1,40 @@
+{
+  "name": "@skyrent/identity-sdk",
+  "version": "0.1.0",
+  "description": "Identity verification SDK with selfie capture, phone input, and address form components",
+  "private": false,
+  "license": "MIT",
+  "author": "Mina Stankovic <stankovicd.mina@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orasari/skyrent-identity"
+  },
+  "keywords": [
+    "identity",
+    "verification",
+    "sdk",
+    "selfie",
+    "kyc",
+    "react"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
+  }
+}
