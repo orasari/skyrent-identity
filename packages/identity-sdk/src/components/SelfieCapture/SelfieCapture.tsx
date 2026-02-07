@@ -152,6 +152,16 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
           </>
         )}
 
+        {!state.isStreaming && !state.isCaptured && !state.isLoading && !state.error && (
+          <button
+            style={{ ...styles.button, ...styles.primaryButton }}
+            onClick={startCamera}
+            type="button"
+          >
+            Start Camera
+          </button>
+        )}
+
         {state.error && (
           <button
             style={{ ...styles.button, ...styles.primaryButton }}

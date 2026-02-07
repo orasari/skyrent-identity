@@ -1,17 +1,13 @@
-import { useState } from 'react';
-import { SelfieCapture } from '@skyrent/identity-sdk';
+import { Suspense, lazy, useState } from 'react';
+
+const SelfieCapturePage = lazy(() =>
+  import('./pages/SelfieCapturePage').then((module) => ({
+    default: module.SelfieCapturePage,
+  }))
+);
 
 function App() {
-  const [selfieData, setSelfieData] = useState<string | null>(null);
-
-  const handleSelfieCapture = (imageData: string) => {
-    console.log('Selfie captured!', imageData.substring(0, 50) + '...');
-    setSelfieData(imageData);
-  };
-
-  const handleError = (error: Error) => {
-    console.error('Selfie capture error:', error);
-  };
+  const [view, setView] = useState<'landing' | 'selfie'>('landing');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -23,35 +19,66 @@ function App() {
       </header>
 
       <main className="container mx-auto p-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-6">Test: SelfieCapture Component</h2>
+        {view === 'landing' && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold">SDK Playground</h2>
+              <p className="text-gray-600">
+                Choose a component to preview how the SDK works.
+              </p>
+            </div>
 
-          {/* SelfieCapture Test */}
-          <div className="mb-8">
-            <h3 className="text-xl font-medium mb-4">Identity Verification - Selfie</h3>
-            <SelfieCapture onCapture={handleSelfieCapture} onError={handleError} />
-          </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setView('selfie')}
+                className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-900">Selfie Capture</h3>
+                    <p className="text-sm text-blue-700">
+                      Open the camera and capture a selfie.
+                    </p>
+                  </div>
+                  <span className="text-2xl">📸</span>
+                </div>
+              </button>
 
-          {/* Display captured selfie */}
-          {selfieData && (
-            <div className="mt-8">
-              <h3 className="text-xl font-medium mb-4">Captured Selfie Preview:</h3>
-              <div className="max-w-md mx-auto">
-                <img
-                  src={selfieData}
-                  alt="Captured selfie"
-                  className="w-full rounded-lg shadow-lg"
-                />
-                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded">
-                  <p className="text-green-800 font-medium">✅ Selfie captured successfully!</p>
-                  <p className="text-sm text-green-700 mt-1">
-                    Image data: {selfieData.substring(0, 60)}...
-                  </p>
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-left shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">Phone Input</h3>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </div>
+                  <span className="text-2xl">📱</span>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-left shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">Address Form</h3>
+                    <p className="text-sm text-gray-600">Coming soon</p>
+                  </div>
+                  <span className="text-2xl">🏠</span>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {view === 'selfie' && (
+          <Suspense
+            fallback={
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <p className="text-gray-600">Loading component...</p>
+              </div>
+            }
+          >
+            <SelfieCapturePage onBack={() => setView('landing')} />
+          </Suspense>
+        )}
       </main>
     </div>
   );
