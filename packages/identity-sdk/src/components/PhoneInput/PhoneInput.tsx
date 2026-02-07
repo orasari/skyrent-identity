@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useState } from 'react';
 import { COUNTRIES } from './countries';
 import { css, styles } from './styles';
 import type { CountryOption, PhoneInputProps } from './types';
@@ -136,8 +136,8 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   };
 
-  const inputId = 'phone-input';
-  const errorId = 'phone-input-error';
+  const inputId = useId();
+  const errorId = `${inputId}-error`;
   const isError = Boolean(error);
 
   return (
