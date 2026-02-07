@@ -16,7 +16,7 @@ export interface PhoneInputProps {
   /**
    * Optional error handler for validation messages.
    */
-  onError?: (error: string) => void;
+  onError?: (error: string | null) => void;
   /**
    * Default selected country code.
    * @default 'US'
@@ -26,6 +26,18 @@ export interface PhoneInputProps {
    * Custom class name for the root container.
    */
   className?: string;
+  /**
+   * Class name overrides for internal elements.
+   */
+  classNames?: {
+    root?: string;
+    label?: string;
+    row?: string;
+    select?: string;
+    input?: string;
+    hint?: string;
+    error?: string;
+  };
   /**
    * Disable the input.
    */

@@ -5,9 +5,14 @@ const SelfieCapturePage = lazy(() =>
     default: module.SelfieCapturePage,
   }))
 );
+const PhoneInputPage = lazy(() =>
+  import('./pages/PhoneInputPage').then((module) => ({
+    default: module.PhoneInputPage,
+  }))
+);
 
 function App() {
-  const [view, setView] = useState<'landing' | 'selfie'>('landing');
+  const [view, setView] = useState<'landing' | 'selfie' | 'phone'>('landing');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -45,15 +50,19 @@ function App() {
                 </div>
               </button>
 
-              <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-left shadow-sm">
+              <button
+                type="button"
+                onClick={() => setView('phone')}
+                className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100"
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">Phone Input</h3>
-                    <p className="text-sm text-gray-600">Coming soon</p>
+                    <h3 className="text-lg font-semibold text-blue-900">Phone Input</h3>
+                    <p className="text-sm text-blue-700">Capture a normalized phone number.</p>
                   </div>
                   <span className="text-2xl">📱</span>
                 </div>
-              </div>
+              </button>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-left shadow-sm">
                 <div className="flex items-center justify-between">
@@ -77,6 +86,18 @@ function App() {
             }
           >
             <SelfieCapturePage onBack={() => setView('landing')} />
+          </Suspense>
+        )}
+
+        {view === 'phone' && (
+          <Suspense
+            fallback={
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <p className="text-gray-600">Loading component...</p>
+              </div>
+            }
+          >
+            <PhoneInputPage onBack={() => setView('landing')} />
           </Suspense>
         )}
       </main>

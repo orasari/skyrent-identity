@@ -1,11 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { COUNTRIES } from './countries';
+import { css, styles } from './styles';
 import type { CountryOption, PhoneInputProps } from './types';
 
 const MIN_DIGITS = 7;
 const MAX_DIGITS = 15;
 
 const normalizeDigits = (value: string) => value.replace(/\D/g, '');
+
+const SORTED_COUNTRIES_BY_DIAL = [...COUNTRIES].sort(
+  (a, b) => b.dialCode.length - a.dialCode.length
+);
+
+const findCountryByDialCode = (digits: string) =>
+  SORTED_COUNTRIES_BY_DIAL.find((country) => digits.startsWith(country.dialCode));
 
 const buildE164 = (dialCode: string, nationalNumber: string) =>
   `+${dialCode}${nationalNumber}`;
@@ -16,6 +24,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onError,
   defaultCountry = 'US',
   className,
+  classNames,
   disabled = false,
 }) => {
   const [country, setCountry] = useState<CountryOption>(() => {
@@ -23,6 +32,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   });
   const [localNumber, setLocalNumber] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const dialCode = country.dialCode;
 
@@ -35,6 +45,15 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       return;
     }
 
+    if (value.startsWith('+')) {
+      const matched = findCountryByDialCode(normalized);
+      if (matched) {
+        setCountry(matched);
+        setLocalNumber(normalized.slice(matched.dialCode.length));
+        return;
+      }
+    }
+
     if (value.startsWith(`+${dialCode}`)) {
       setLocalNumber(value.replace(`+${dialCode}`, ''));
     }
@@ -43,6 +62,11 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   useEffect(() => {
     if (!parsedLocalNumber) {
       setError(null);
+      return;
+    }
+
+    if (/[a-z]/i.test(localNumber)) {
+      setError('Digits only');
       return;
     }
 
@@ -60,7 +84,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [parsedLocalNumber]);
 
   useEffect(() => {
-    if (error && onError) {
+    if (onError) {
       onError(error);
     }
   }, [error, onError]);
@@ -79,6 +103,18 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     const nextValue = event.target.value;
     setLocalNumber(nextValue);
 
+    if (nextValue.trim().startsWith('+')) {
+      const digits = normalizeDigits(nextValue);
+      const matched = findCountryByDialCode(digits);
+      if (matched) {
+        setCountry(matched);
+        const local = digits.slice(matched.dialCode.length);
+        setLocalNumber(local);
+        onChange(buildE164(matched.dialCode, local));
+        return;
+      }
+    }
+
     const digits = normalizeDigits(nextValue);
     if (digits) {
       onChange(buildE164(dialCode, digits));
@@ -87,15 +123,43 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   };
 
+  const handleCopy = async () => {
+    if (!value) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // no-op: clipboard not available
+    }
+  };
+
+  const inputId = 'phone-input';
+  const errorId = 'phone-input-error';
+  const isError = Boolean(error);
+
   return (
-    <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Phone number</label>
-      <div className="flex gap-2">
+    <div className={[className, classNames?.root].filter(Boolean).join(' ')} style={styles.container}>
+      <style>{css}</style>
+      <div>
+        <label htmlFor={inputId} style={styles.label} className={classNames?.label}>
+          Phone number
+        </label>
+        <p style={styles.helper}>We’ll normalize to E.164 format.</p>
+      </div>
+      <div
+        style={styles.row}
+        className={['skyrent-phone-input__row', classNames?.row].filter(Boolean).join(' ')}
+      >
         <select
           value={country.code}
           onChange={handleCountryChange}
           disabled={disabled}
-          className="w-40 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style={isError ? { ...styles.select, ...styles.selectError } : styles.select}
+          className={['skyrent-phone-input__select', classNames?.select].filter(Boolean).join(' ')}
+          aria-label="Country code"
         >
           {COUNTRIES.map((option) => (
             <option key={option.code} value={option.code}>
@@ -104,16 +168,43 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           ))}
         </select>
         <input
+          id={inputId}
           type="tel"
           value={localNumber}
           onChange={handleNumberChange}
           disabled={disabled}
           placeholder="Enter phone number"
-          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style={isError ? { ...styles.input, ...styles.inputError } : styles.input}
+          className={['skyrent-phone-input__input', classNames?.input].filter(Boolean).join(' ')}
+          aria-invalid={isError}
+          aria-describedby={error ? errorId : undefined}
         />
       </div>
-      <p className="mt-2 text-xs text-gray-500">Normalized: {value || '—'}</p>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      <div style={styles.resultPanel}>
+        <div style={styles.resultRow}>
+          <div>
+            <div style={styles.resultLabel}>Normalized</div>
+            <div style={value ? styles.resultValue : styles.resultValueMuted}>
+              {value || '—'}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleCopy}
+            style={value ? styles.copyButton : { ...styles.copyButton, ...styles.copyButtonDisabled }}
+            className="skyrent-phone-input__copy"
+            disabled={!value}
+          >
+            {copied ? 'Copied' : 'Copy'}
+          </button>
+        </div>
+        <div style={styles.resultMeta}>E.164</div>
+      </div>
+      {error && (
+        <p id={errorId} style={styles.error} className={classNames?.error}>
+          {error}
+        </p>
+      )}
     </div>
   );
 };

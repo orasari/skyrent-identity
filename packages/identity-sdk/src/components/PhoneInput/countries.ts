@@ -1,6 +1,7 @@
 import type { CountryOption } from './types';
 
 export const COUNTRIES: CountryOption[] = [
+  { code: 'RS', name: 'Serbia', dialCode: '381' },
   { code: 'US', name: 'United States', dialCode: '1' },
   { code: 'CA', name: 'Canada', dialCode: '1' },
   { code: 'GB', name: 'United Kingdom', dialCode: '44' },

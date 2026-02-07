@@ -6,7 +6,7 @@ import { Button } from '../Button';
 describe('Button', () => {
   it('renders the label', () => {
     render(<Button label="Click me" onClick={() => {}} />);
-    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Click me' })).not.toBeNull();
   });
 
   it('calls onClick when clicked', () => {
@@ -18,11 +18,11 @@ describe('Button', () => {
 
   it('defaults to type="button"', () => {
     render(<Button label="Default" onClick={() => {}} />);
-    expect(screen.getByRole('button', { name: 'Default' })).toHaveAttribute('type', 'button');
+    expect(screen.getByRole('button', { name: 'Default' }).getAttribute('type')).toBe('button');
   });
 
   it('supports custom type', () => {
     render(<Button label="Submit" onClick={() => {}} type="submit" />);
-    expect(screen.getByRole('button', { name: 'Submit' })).toHaveAttribute('type', 'submit');
+    expect(screen.getByRole('button', { name: 'Submit' }).getAttribute('type')).toBe('submit');
   });
 });
