@@ -7,3 +7,5 @@ export type { SelfieCaptureProps, CameraState } from './components/SelfieCapture
 export { CameraError } from './components/SelfieCapture';
 export { PhoneInput } from './components/PhoneInput';
 export type { PhoneInputProps, CountryOption } from './components/PhoneInput';
+export { AddressForm } from './components/AddressForm';
+export type { AddressFormProps, AddressField, AddressValue } from './components/AddressForm';
