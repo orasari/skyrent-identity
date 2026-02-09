@@ -9,6 +9,12 @@ This project consists of two main packages:
 - **identity-sdk** - A reusable React component library for identity verification
 - **skyrent-demo** - A demonstration application showing SDK integration in a drone rental context
 
+### Demo App Flow & Performance
+
+The demo app uses a step-based flow and lazy-loads verification steps:
+- Selfie capture renders first.
+- Phone verification and address form modules load only after the selfie step completes.
+
 ## Getting Started
 
 ### Prerequisites

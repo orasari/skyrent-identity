@@ -24,6 +24,7 @@ import { styles } from './styles';
 export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   onCapture,
   onError,
+  onCancel,
   className,
   width = 640,
   height = 480,
@@ -48,6 +49,13 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
 
   const handleRetake = () => {
     retake();
+  };
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    }
+    stopCamera();
   };
 
   return (
@@ -86,10 +94,11 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
           </div>
         )}
 
-        {/* Captured image preview */}
-        {state.isCaptured && (
-          <canvas ref={canvasRef} style={styles.previewCanvas} width={width} height={height} />
-        )}
+        {/* Captured image preview (same canvas used for capture) */}
+        <canvas
+          ref={canvasRef}
+          style={state.isCaptured ? styles.previewCanvas : styles.hiddenCanvas}
+        />
 
         {/* Loading overlay */}
         {state.isLoading && (
@@ -107,10 +116,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
         )}
       </div>
 
-      {/* Hidden canvas for image capture */}
-      {!state.isCaptured && (
-        <canvas ref={canvasRef} style={styles.hiddenCanvas} width={width} height={height} />
-      )}
+      {/* Canvas stays mounted to preserve captured frame */}
 
       {/* Controls */}
       <div style={styles.controls}>
@@ -125,7 +131,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
             </button>
             <button
               style={{ ...styles.button, ...styles.secondaryButton }}
-              onClick={stopCamera}
+              onClick={handleCancel}
               type="button"
             >
               Cancel
@@ -134,22 +140,13 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
         )}
 
         {state.isCaptured && (
-          <>
-            <button
-              style={{ ...styles.button, ...styles.successButton }}
-              onClick={handleCapture}
-              type="button"
-            >
-              ✓ Use This Photo
-            </button>
-            <button
-              style={{ ...styles.button, ...styles.secondaryButton }}
-              onClick={handleRetake}
-              type="button"
-            >
-              ↻ Retake
-            </button>
-          </>
+          <button
+            style={{ ...styles.button, ...styles.secondaryButton }}
+            onClick={handleRetake}
+            type="button"
+          >
+            ↻ Retake
+          </button>
         )}
 
         {!state.isStreaming && !state.isCaptured && !state.isLoading && !state.error && (

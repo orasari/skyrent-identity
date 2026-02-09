@@ -6,6 +6,11 @@ export interface SelfieCaptureProps {
   onCapture: (imageData: string) => void;
 
   /**
+   * Callback fired when the user cancels capture
+   */
+  onCancel?: () => void;
+
+  /**
    * Callback fired when an error occurs
    * @param error - Error object with details
    */

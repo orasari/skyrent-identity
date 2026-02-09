@@ -1,23 +1,47 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
+import type { AddressField, AddressValue } from '@skyrent/identity-sdk';
+import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
 
-const SelfieCapturePage = lazy(() =>
-  import('./pages/SelfieCapturePage').then((module) => ({
-    default: module.SelfieCapturePage,
+const BrowseDronesPage = lazy(() =>
+  import('./pages/BrowseDronesPage').then((module) => ({
+    default: module.BrowseDronesPage,
   }))
 );
-const PhoneInputPage = lazy(() =>
-  import('./pages/PhoneInputPage').then((module) => ({
-    default: module.PhoneInputPage,
+const VerificationFlowPage = lazy(() =>
+  import('./pages/VerificationFlowPage').then((module) => ({
+    default: module.VerificationFlowPage,
   }))
 );
-const AddressFormPage = lazy(() =>
-  import('./pages/AddressFormPage').then((module) => ({
-    default: module.AddressFormPage,
+const CheckoutPage = lazy(() =>
+  import('./pages/CheckoutPage').then((module) => ({
+    default: module.CheckoutPage,
   }))
 );
 
 function App() {
-  const [view, setView] = useState<'landing' | 'selfie' | 'phone' | 'address'>('landing');
+  const [view, setView] = useState<'browse' | 'verify' | 'checkout'>('browse');
+  const [selectedDroneId, setSelectedDroneId] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [address, setAddress] = useState<AddressValue>(EMPTY_ADDRESS);
+  const [addressErrors, setAddressErrors] = useState<Partial<Record<AddressField, string>> | null>(
+    null
+  );
+  const [selfie, setSelfie] = useState<string | null>(null);
+
+  const selectedDrone = useMemo(
+    () => DRONES.find((drone) => drone.id === selectedDroneId) ?? null,
+    [selectedDroneId]
+  );
+
+  const resetFlow = () => {
+    setSelectedDroneId(null);
+    setPhone('');
+    setPhoneError(null);
+    setAddress(EMPTY_ADDRESS);
+    setAddressErrors(null);
+    setSelfie(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,64 +53,7 @@ function App() {
       </header>
 
       <main className="container mx-auto p-8">
-        {view === 'landing' && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="mb-8">
-              <h2 className="text-2xl font-semibold">SDK Playground</h2>
-              <p className="text-gray-600">
-                Choose a component to preview how the SDK works.
-              </p>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => setView('selfie')}
-                className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-900">Selfie Capture</h3>
-                    <p className="text-sm text-blue-700">
-                      Open the camera and capture a selfie.
-                    </p>
-                  </div>
-                  <span className="text-2xl">📸</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setView('phone')}
-                className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-900">Phone Input</h3>
-                    <p className="text-sm text-blue-700">Capture a normalized phone number.</p>
-                  </div>
-                  <span className="text-2xl">📱</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setView('address')}
-                className="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-blue-900">Address Form</h3>
-                    <p className="text-sm text-blue-700">Collect structured address details.</p>
-                  </div>
-                  <span className="text-2xl">🏠</span>
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {view === 'selfie' && (
+        {view === 'browse' && (
           <Suspense
             fallback={
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -94,11 +61,16 @@ function App() {
               </div>
             }
           >
-            <SelfieCapturePage onBack={() => setView('landing')} />
+            <BrowseDronesPage
+              drones={DRONES}
+              selectedDroneId={selectedDroneId}
+              onSelectDrone={setSelectedDroneId}
+              onStartVerification={() => setView('verify')}
+            />
           </Suspense>
         )}
 
-        {view === 'phone' && (
+        {view === 'verify' && (
           <Suspense
             fallback={
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -106,11 +78,25 @@ function App() {
               </div>
             }
           >
-            <PhoneInputPage onBack={() => setView('landing')} />
+            <VerificationFlowPage
+              selectedDrone={selectedDrone}
+              phone={phone}
+              onPhoneChange={setPhone}
+              phoneError={phoneError}
+              onPhoneError={setPhoneError}
+              address={address}
+              onAddressChange={setAddress}
+              addressErrors={addressErrors}
+              onAddressErrors={setAddressErrors}
+              selfie={selfie}
+              onSelfieCapture={setSelfie}
+              onBack={() => setView('browse')}
+              onContinue={() => setView('checkout')}
+            />
           </Suspense>
         )}
 
-        {view === 'address' && (
+        {view === 'checkout' && (
           <Suspense
             fallback={
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -118,7 +104,17 @@ function App() {
               </div>
             }
           >
-            <AddressFormPage onBack={() => setView('landing')} />
+            <CheckoutPage
+              selectedDrone={selectedDrone}
+              phone={phone}
+              address={address}
+              selfie={selfie}
+              onBack={() => setView('verify')}
+              onStartOver={() => {
+                resetFlow();
+                setView('browse');
+              }}
+            />
           </Suspense>
         )}
       </main>
