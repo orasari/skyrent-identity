@@ -1,4 +1,4 @@
-import type { AddressField, AddressValue } from '@skyrent/identity-sdk';
+import type { AddressField, AddressValue, IdentityData } from '@skyrent/identity-sdk';
 import type { CartItem } from './cart';
 import type { Drone } from './drone';
 
@@ -19,7 +19,7 @@ export interface VerificationFlowPageProps {
   onUpdateCartDays: (id: string, days: number) => void;
   onRemoveFromCart: (id: string) => void;
   onBack: () => void;
-  onContinue: () => void;
+  onContinue: (result: IdentityData) => void;
 }
 
 export type VerificationStep = 'selfie' | 'phone' | 'address';

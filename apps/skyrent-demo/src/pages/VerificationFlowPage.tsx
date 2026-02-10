@@ -1,4 +1,4 @@
-import { SelfieCapture } from '@skyrent/identity-sdk';
+import { SelfieCapture, getIdentityData } from '@skyrent/identity-sdk';
 import { lazy, useMemo, useState } from 'react';
 import { Button } from '../components/Button';
 import { Layout } from '../components/Layout';
@@ -46,7 +46,7 @@ export function VerificationFlowPage({
   }, [phone, phoneError, selfie]);
   const [step, setStep] = useState<VerificationStep>(initialStep);
 
-  const stepIndex = step === 'selfie' ? 2 : step === 'phone' ? 3 : 4;
+  const [isVerifying, setIsVerifying] = useState(false);
   const canContinueFromSelfie = Boolean(selfie);
   const canContinueFromPhone = Boolean(phone && !phoneError);
   const canContinueFromAddress = Boolean(!hasAddressErrors);
@@ -58,7 +58,7 @@ export function VerificationFlowPage({
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-                Verification step {stepIndex} of 4
+                Step 2 of 4
               </p>
               <h2 className="text-2xl font-semibold">Verification Flow</h2>
               <p className="text-gray-600">
@@ -145,15 +145,30 @@ export function VerificationFlowPage({
             {step === 'address' && (
               <button
                 type="button"
-                onClick={onContinue}
-                disabled={!canContinueFromAddress}
+                onClick={async () => {
+                  if (!selfie) {
+                    return;
+                  }
+                  setIsVerifying(true);
+                  try {
+                    const result = await getIdentityData({
+                      selfieUrl: selfie,
+                      phone,
+                      address,
+                    });
+                    onContinue(result);
+                  } finally {
+                    setIsVerifying(false);
+                  }
+                }}
+                disabled={!canContinueFromAddress || isVerifying}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
-                  canContinueFromAddress
+                  canContinueFromAddress && !isVerifying
                     ? 'bg-emerald-600 hover:bg-emerald-700'
                     : 'cursor-not-allowed bg-gray-300'
                 }`}
               >
-                Continue to Checkout
+                {isVerifying ? 'Running Verification...' : 'Continue to Verification Result'}
               </button>
             )}
           </div>

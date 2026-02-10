@@ -37,6 +37,11 @@ pnpm --filter skyrent-demo dev
 
 The demo application will be available at `http://localhost:5173`
 
+### Backend / API Notes
+
+This project does not require a backend service. The demo uses a client-side mock in
+`getIdentityData()` to generate verification results and scores for the flow.
+
 ### SDK Quick Start
 
 Install the SDK (consumer apps):

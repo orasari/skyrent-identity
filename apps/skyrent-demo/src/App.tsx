@@ -1,5 +1,5 @@
 import { Suspense, lazy, useMemo, useState } from 'react';
-import type { AddressField, AddressValue } from '@skyrent/identity-sdk';
+import type { AddressField, AddressValue, IdentityData } from '@skyrent/identity-sdk';
 import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
 import { useCart } from './hooks/useCart';
 
@@ -18,9 +18,14 @@ const CheckoutPage = lazy(() =>
     default: module.CheckoutPage,
   }))
 );
+const VerificationResultPage = lazy(() =>
+  import('./pages/VerificationResultPage').then((module) => ({
+    default: module.VerificationResultPage,
+  }))
+);
 
 function App() {
-  const [view, setView] = useState<'browse' | 'verify' | 'checkout'>('browse');
+  const [view, setView] = useState<'browse' | 'verify' | 'result' | 'checkout'>('browse');
   const {
     cartItems,
     selectedDroneId,
@@ -36,6 +41,7 @@ function App() {
     null
   );
   const [selfie, setSelfie] = useState<string | null>(null);
+  const [identityResult, setIdentityResult] = useState<IdentityData | null>(null);
 
   const selectedDrone = useMemo(
     () => DRONES.find((drone) => drone.id === selectedDroneId) ?? null,
@@ -49,6 +55,7 @@ function App() {
     setAddress(EMPTY_ADDRESS);
     setAddressErrors(null);
     setSelfie(null);
+    setIdentityResult(null);
   };
 
   return (
@@ -75,7 +82,10 @@ function App() {
               onAddToCart={addToCart}
               onUpdateCartDays={updateCartDays}
               onRemoveFromCart={removeFromCart}
-              onStartVerification={() => setView('verify')}
+              onStartVerification={() => {
+                setIdentityResult(null);
+                setView('verify');
+              }}
             />
           </Suspense>
         )}
@@ -105,7 +115,34 @@ function App() {
               onUpdateCartDays={updateCartDays}
               onRemoveFromCart={removeFromCart}
               onBack={() => setView('browse')}
+              onContinue={(result) => {
+                setIdentityResult(result);
+                setView('result');
+              }}
+            />
+          </Suspense>
+        )}
+
+        {view === 'result' && identityResult && (
+          <Suspense
+            fallback={
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <p className="text-gray-600">Loading component...</p>
+              </div>
+            }
+          >
+            <VerificationResultPage
+              result={identityResult}
+              drones={DRONES}
+              cartItems={cartItems}
+              onUpdateCartDays={updateCartDays}
+              onRemoveFromCart={removeFromCart}
               onContinue={() => setView('checkout')}
+              onRetry={() => setView('verify')}
+              onStartOver={() => {
+                resetFlow();
+                setView('browse');
+              }}
             />
           </Suspense>
         )}
@@ -119,15 +156,15 @@ function App() {
             }
           >
             <CheckoutPage
-              selectedDrone={selectedDrone}
               drones={DRONES}
               cartItems={cartItems}
               phone={phone}
               address={address}
               selfie={selfie}
+              identityResult={identityResult}
               onUpdateCartDays={updateCartDays}
               onRemoveFromCart={removeFromCart}
-              onBack={() => setView('verify')}
+              onBack={() => setView('result')}
               onStartOver={() => {
                 resetFlow();
                 setView('browse');
