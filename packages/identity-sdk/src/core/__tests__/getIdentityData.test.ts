@@ -1,35 +1,32 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { AddressValue } from '../../components/AddressForm';
 import type { Address } from '../types';
 import { getIdentityData } from '../getIdentityData';
 
 describe('getIdentityData', () => {
   it('throws when the verification service is unavailable', async () => {
-    vi.spyOn(Math, 'random').mockReturnValueOnce(0.01);
-
     await expect(
-      getIdentityData({
-        selfieUrl: 'data:image/jpeg;base64,abc',
-        phone: '+14155552671',
-        address: {
-          line1: '123 Main St',
-          line2: '',
-          city: 'San Francisco',
-          region: 'CA',
-          postalCode: '94102',
-          country: 'US',
+      getIdentityData(
+        {
+          selfieUrl: 'data:image/jpeg;base64,abc',
+          phone: '+14155552671',
+          address: {
+            line1: '123 Main St',
+            line2: '',
+            city: 'San Francisco',
+            region: 'CA',
+            postalCode: '94102',
+            country: 'US',
+          },
         },
-      })
+        { rng: () => 0.01 }
+      )
     ).rejects.toThrow('Verification service unavailable');
-
-    vi.restoreAllMocks();
   });
 
   it('returns failed status for scores below 50 and normalizes AddressValue', async () => {
-    vi.spyOn(Math, 'random')
-      .mockReturnValueOnce(0.5) // error roll
-      .mockReturnValueOnce(0.1) // score roll (<0.3)
-      .mockReturnValueOnce(0.99); // score value -> 49
+    const rngValues = [0.5, 0.1, 0.99];
+    const rng = () => rngValues.shift() ?? 0;
 
     const addressValue: AddressValue = {
       line1: '123 Main St',
@@ -40,11 +37,14 @@ describe('getIdentityData', () => {
       country: 'US',
     };
 
-    const result = await getIdentityData({
-      selfieUrl: 'data:image/jpeg;base64,abc',
-      phone: '+14155552671',
-      address: addressValue,
-    });
+    const result = await getIdentityData(
+      {
+        selfieUrl: 'data:image/jpeg;base64,abc',
+        phone: '+14155552671',
+        address: addressValue,
+      },
+      { rng }
+    );
 
     expect(result.status).toBe('failed');
     expect(result.score).toBeLessThan(50);
@@ -56,14 +56,11 @@ describe('getIdentityData', () => {
       postalCode: '94102',
     });
 
-    vi.restoreAllMocks();
   });
 
   it('returns verified status for scores 50 and above and preserves Address', async () => {
-    vi.spyOn(Math, 'random')
-      .mockReturnValueOnce(0.5) // error roll
-      .mockReturnValueOnce(0.9) // score roll (>=0.3)
-      .mockReturnValueOnce(0); // score value -> 50
+    const rngValues = [0.5, 0.9, 0];
+    const rng = () => rngValues.shift() ?? 0;
 
     const address: Address = {
       street: '500 Market St',
@@ -73,16 +70,18 @@ describe('getIdentityData', () => {
       postalCode: '94105',
     };
 
-    const result = await getIdentityData({
-      selfieUrl: 'data:image/jpeg;base64,abc',
-      phone: '+14155552671',
-      address,
-    });
+    const result = await getIdentityData(
+      {
+        selfieUrl: 'data:image/jpeg;base64,abc',
+        phone: '+14155552671',
+        address,
+      },
+      { rng }
+    );
 
     expect(result.status).toBe('verified');
     expect(result.score).toBeGreaterThanOrEqual(50);
     expect(result.address).toEqual(address);
 
-    vi.restoreAllMocks();
   });
 });

@@ -1,5 +1,6 @@
 import { Suspense, lazy, useMemo, useState } from 'react';
 import type { AddressField, AddressValue, IdentityData } from '@skyrent/identity-sdk';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
 import { useCart } from './hooks/useCart';
 
@@ -62,6 +63,19 @@ function App() {
     setIdentityResult(null);
   };
 
+  const loadingCard = (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <p className="text-gray-600">Loading component...</p>
+    </div>
+  );
+
+  const errorCard = (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <p className="text-gray-900 font-semibold">Something went wrong.</p>
+      <p className="text-gray-600 text-sm mt-2">Please refresh the page and try again.</p>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 text-white p-4 shadow-lg">
@@ -73,107 +87,91 @@ function App() {
 
       <main className="container mx-auto p-8">
         {view === 'browse' && (
-          <Suspense
-            fallback={
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <p className="text-gray-600">Loading component...</p>
-              </div>
-            }
-          >
-            <BrowseDronesPage
-              drones={DRONES}
-              cartItems={cartItems}
-              onAddToCart={addToCart}
-              onUpdateCartDays={updateCartDays}
-              onRemoveFromCart={removeFromCart}
-              onStartVerification={() => {
-                resetVerification();
-                setView('verify');
-              }}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={errorCard}>
+            <Suspense fallback={loadingCard}>
+              <BrowseDronesPage
+                drones={DRONES}
+                cartItems={cartItems}
+                onAddToCart={addToCart}
+                onUpdateCartDays={updateCartDays}
+                onRemoveFromCart={removeFromCart}
+                onStartVerification={() => {
+                  resetVerification();
+                  setView('verify');
+                }}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
 
         {view === 'verify' && (
-          <Suspense
-            fallback={
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <p className="text-gray-600">Loading component...</p>
-              </div>
-            }
-          >
-            <VerificationFlowPage
-              selectedDrone={selectedDrone}
-              drones={DRONES}
-              cartItems={cartItems}
-              phone={phone}
-              onPhoneChange={setPhone}
-              phoneError={phoneError}
-              onPhoneError={setPhoneError}
-              address={address}
-              onAddressChange={setAddress}
-              addressErrors={addressErrors}
-              onAddressErrors={setAddressErrors}
-              selfie={selfie}
-              onSelfieCapture={setSelfie}
-              onUpdateCartDays={updateCartDays}
-              onRemoveFromCart={removeFromCart}
-              onBack={() => setView('browse')}
-              onContinue={(result) => {
-                setIdentityResult(result);
-                setView('result');
-              }}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={errorCard}>
+            <Suspense fallback={loadingCard}>
+              <VerificationFlowPage
+                selectedDrone={selectedDrone}
+                drones={DRONES}
+                cartItems={cartItems}
+                phone={phone}
+                onPhoneChange={setPhone}
+                phoneError={phoneError}
+                onPhoneError={setPhoneError}
+                address={address}
+                onAddressChange={setAddress}
+                addressErrors={addressErrors}
+                onAddressErrors={setAddressErrors}
+                selfie={selfie}
+                onSelfieCapture={setSelfie}
+                onUpdateCartDays={updateCartDays}
+                onRemoveFromCart={removeFromCart}
+                onBack={() => setView('browse')}
+                onContinue={(result) => {
+                  setIdentityResult(result);
+                  setView('result');
+                }}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
 
         {view === 'result' && identityResult && (
-          <Suspense
-            fallback={
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <p className="text-gray-600">Loading component...</p>
-              </div>
-            }
-          >
-            <VerificationResultPage
-              result={identityResult}
-              drones={DRONES}
-              cartItems={cartItems}
-              onUpdateCartDays={updateCartDays}
-              onRemoveFromCart={removeFromCart}
-              onContinue={() => setView('checkout')}
-              onRetry={() => {
-                resetVerification();
-                setView('verify');
-              }}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={errorCard}>
+            <Suspense fallback={loadingCard}>
+              <VerificationResultPage
+                result={identityResult}
+                drones={DRONES}
+                cartItems={cartItems}
+                onUpdateCartDays={updateCartDays}
+                onRemoveFromCart={removeFromCart}
+                onContinue={() => setView('checkout')}
+                onRetry={() => {
+                  resetVerification();
+                  setView('verify');
+                }}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
 
         {view === 'checkout' && (
-          <Suspense
-            fallback={
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <p className="text-gray-600">Loading component...</p>
-              </div>
-            }
-          >
-            <CheckoutPage
-              drones={DRONES}
-              cartItems={cartItems}
-              phone={phone}
-              address={address}
-              selfie={selfie}
-              identityResult={identityResult}
-              onUpdateCartDays={updateCartDays}
-              onRemoveFromCart={removeFromCart}
-              onBack={() => setView('result')}
-              onStartOver={() => {
-                resetFlow();
-                setView('browse');
-              }}
-            />
-          </Suspense>
+          <ErrorBoundary fallback={errorCard}>
+            <Suspense fallback={loadingCard}>
+              <CheckoutPage
+                drones={DRONES}
+                cartItems={cartItems}
+                phone={phone}
+                address={address}
+                selfie={selfie}
+                identityResult={identityResult}
+                onUpdateCartDays={updateCartDays}
+                onRemoveFromCart={removeFromCart}
+                onBack={() => setView('result')}
+                onStartOver={() => {
+                  resetFlow();
+                  setView('browse');
+                }}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
       </main>
     </div>

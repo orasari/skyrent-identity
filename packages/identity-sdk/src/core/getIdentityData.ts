@@ -7,6 +7,21 @@ type IdentityInput = {
   address: Address | AddressValue;
 };
 
+type IdentityOptions = {
+  /**
+   * Probability of throwing a simulated service error (0-1).
+   */
+  errorRate?: number;
+  /**
+   * Probability of a passing score (0-1).
+   */
+  passRate?: number;
+  /**
+   * Random number generator override for deterministic tests.
+   */
+  rng?: () => number;
+};
+
 /**
  * Type guard for AddressForm values vs normalized Address objects.
  */
@@ -31,26 +46,36 @@ const normalizeAddress = (address: Address | AddressValue): Address => {
 };
 
 /**
- * Generate a score with a 30% fail / 70% pass distribution.
+ * Generate a score with a configurable pass rate (default 70%).
  */
-const generateScore = () => {
-  const roll = Math.random();
-  if (roll < 0.3) {
-    return Math.floor(Math.random() * 50);
+const generateScore = (passRate: number, rng: () => number) => {
+  const normalizedPassRate = Math.min(1, Math.max(0, passRate));
+  const failRate = 1 - normalizedPassRate;
+  const roll = rng();
+  if (roll < failRate) {
+    return Math.floor(rng() * 50);
   }
-  return 50 + Math.floor(Math.random() * 51);
+  return 50 + Math.floor(rng() * 51);
 };
 
 /**
  * Aggregate identity data and produce a verification result.
- * Includes a small simulated error rate to mimic backend instability.
+ * Defaults to a 70% pass rate and a small simulated error rate.
+ * Accepts optional overrides for deterministic tests or environment tuning.
  */
-export async function getIdentityData(input: IdentityInput): Promise<IdentityData> {
-  const errorRoll = Math.random();
-  if (errorRoll < 0.05) {
+export async function getIdentityData(
+  input: IdentityInput,
+  options: IdentityOptions = {}
+): Promise<IdentityData> {
+  const errorRate = options.errorRate ?? 0.05;
+  const passRate = options.passRate ?? 0.7;
+  const rng = options.rng ?? Math.random;
+
+  const errorRoll = rng();
+  if (errorRoll < errorRate) {
     throw new Error('Verification service unavailable. Please try again.');
   }
-  const score = generateScore();
+  const score = generateScore(passRate, rng);
   const status: IdentityData['status'] = score >= 50 ? 'verified' : 'failed';
 
   return {
