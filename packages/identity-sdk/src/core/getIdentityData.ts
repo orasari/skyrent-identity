@@ -7,9 +7,15 @@ type IdentityInput = {
   address: Address | AddressValue;
 };
 
+/**
+ * Type guard for AddressForm values vs normalized Address objects.
+ */
 const isAddressValue = (address: Address | AddressValue): address is AddressValue =>
   'line1' in address || 'region' in address;
 
+/**
+ * Normalize AddressForm values into the SDK Address shape.
+ */
 const normalizeAddress = (address: Address | AddressValue): Address => {
   if (isAddressValue(address)) {
     const street = [address.line1, address.line2].filter(Boolean).join(', ');
@@ -24,6 +30,9 @@ const normalizeAddress = (address: Address | AddressValue): Address => {
   return address;
 };
 
+/**
+ * Generate a score with a 30% fail / 70% pass distribution.
+ */
 const generateScore = () => {
   const roll = Math.random();
   if (roll < 0.3) {
@@ -32,6 +41,10 @@ const generateScore = () => {
   return 50 + Math.floor(Math.random() * 51);
 };
 
+/**
+ * Aggregate identity data and produce a verification result.
+ * Includes a small simulated error rate to mimic backend instability.
+ */
 export async function getIdentityData(input: IdentityInput): Promise<IdentityData> {
   const errorRoll = Math.random();
   if (errorRoll < 0.05) {

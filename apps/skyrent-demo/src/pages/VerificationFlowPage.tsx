@@ -52,6 +52,31 @@ export function VerificationFlowPage({
   const canContinueFromPhone = Boolean(phone && !phoneError);
   const canContinueFromAddress = Boolean(!hasAddressErrors);
 
+  /**
+   * Run the SDK verification and handle UI loading/error states.
+   */
+  const handleVerification = async () => {
+    if (!selfie) {
+      return;
+    }
+    setIsVerifying(true);
+    setVerificationError(null);
+    try {
+      const result = await getIdentityData({
+        selfieUrl: selfie,
+        phone,
+        address,
+      });
+      onContinue(result);
+    } catch (error) {
+      setVerificationError(
+        error instanceof Error ? error.message : 'Verification failed. Please try again.'
+      );
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   return (
     <Layout
       left={
@@ -151,29 +176,7 @@ export function VerificationFlowPage({
             {step === 'address' && (
               <button
                 type="button"
-                onClick={async () => {
-                  if (!selfie) {
-                    return;
-                  }
-                  setIsVerifying(true);
-                  setVerificationError(null);
-                  try {
-                    const result = await getIdentityData({
-                      selfieUrl: selfie,
-                      phone,
-                      address,
-                    });
-                    onContinue(result);
-                  } catch (error) {
-                    setVerificationError(
-                      error instanceof Error
-                        ? error.message
-                        : 'Verification failed. Please try again.'
-                    );
-                  } finally {
-                    setIsVerifying(false);
-                  }
-                }}
+                onClick={handleVerification}
                 disabled={!canContinueFromAddress || isVerifying}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
                   canContinueFromAddress && !isVerifying
