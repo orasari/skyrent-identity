@@ -50,6 +50,10 @@ function App() {
 
   const resetFlow = () => {
     resetCart();
+    resetVerification();
+  };
+
+  const resetVerification = () => {
     setPhone('');
     setPhoneError(null);
     setAddress(EMPTY_ADDRESS);
@@ -83,7 +87,7 @@ function App() {
               onUpdateCartDays={updateCartDays}
               onRemoveFromCart={removeFromCart}
               onStartVerification={() => {
-                setIdentityResult(null);
+                resetVerification();
                 setView('verify');
               }}
             />
@@ -138,10 +142,9 @@ function App() {
               onUpdateCartDays={updateCartDays}
               onRemoveFromCart={removeFromCart}
               onContinue={() => setView('checkout')}
-              onRetry={() => setView('verify')}
-              onStartOver={() => {
-                resetFlow();
-                setView('browse');
+              onRetry={() => {
+                resetVerification();
+                setView('verify');
               }}
             />
           </Suspense>

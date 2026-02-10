@@ -1,4 +1,5 @@
 import type { AddressValue, IdentityData } from '@skyrent/identity-sdk';
+import { useState } from 'react';
 import { Button } from '../components/Button';
 import { Layout } from '../components/Layout';
 import { RentalSummaryCard } from '../components/RentalSummaryCard';
@@ -31,6 +32,7 @@ export function CheckoutPage({
   onBack,
   onStartOver,
 }: CheckoutPageProps) {
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const cartSummary = cartItems.flatMap((item) => {
     const drone = drones.find((entry) => entry.id === item.droneId);
     if (!drone) {
@@ -136,8 +138,14 @@ export function CheckoutPage({
               <p className="mt-2 text-sm text-gray-600">
                 Review the details and complete the rental to lock in your drone.
               </p>
+              {showConfirmation && (
+                <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+                  Rental confirmed. You will receive a confirmation email shortly.
+                </div>
+              )}
               <button
                 type="button"
+                onClick={() => setShowConfirmation(true)}
                 disabled={!isVerified}
                 className={`mt-4 w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
                   isVerified

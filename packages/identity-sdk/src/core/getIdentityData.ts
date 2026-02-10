@@ -33,6 +33,10 @@ const generateScore = () => {
 };
 
 export async function getIdentityData(input: IdentityInput): Promise<IdentityData> {
+  const errorRoll = Math.random();
+  if (errorRoll < 0.05) {
+    throw new Error('Verification service unavailable. Please try again.');
+  }
   const score = generateScore();
   const status: IdentityData['status'] = score >= 50 ? 'verified' : 'failed';
 

@@ -13,7 +13,6 @@ interface VerificationResultPageProps {
   onRemoveFromCart: (id: string) => void;
   onContinue: () => void;
   onRetry: () => void;
-  onStartOver: () => void;
 }
 
 export function VerificationResultPage({
@@ -24,7 +23,6 @@ export function VerificationResultPage({
   onRemoveFromCart,
   onContinue,
   onRetry,
-  onStartOver,
 }: VerificationResultPageProps) {
   const isVerified = result.status === 'verified';
 
@@ -46,6 +44,8 @@ export function VerificationResultPage({
             className={`rounded-xl border p-5 ${
               isVerified ? 'border-emerald-200 bg-emerald-50' : 'border-rose-200 bg-rose-50'
             }`}
+            role="status"
+            aria-live="polite"
           >
             <p className="text-sm font-semibold text-gray-900">
               {isVerified ? 'Verification successful' : 'Verification failed'}
@@ -90,6 +90,9 @@ export function VerificationResultPage({
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-3">
+            <p className="sr-only" aria-live="polite">
+              Continue to checkout is {isVerified ? 'enabled' : 'disabled'}.
+            </p>
             {!isVerified && (
               <button
                 type="button"
@@ -99,13 +102,6 @@ export function VerificationResultPage({
                 Retry Verification
               </button>
             )}
-            <button
-              type="button"
-              onClick={onStartOver}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            >
-              Start Over
-            </button>
             <button
               type="button"
               onClick={onContinue}

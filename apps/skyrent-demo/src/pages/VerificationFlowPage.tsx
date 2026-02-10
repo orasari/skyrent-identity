@@ -47,6 +47,7 @@ export function VerificationFlowPage({
   const [step, setStep] = useState<VerificationStep>(initialStep);
 
   const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
   const canContinueFromSelfie = Boolean(selfie);
   const canContinueFromPhone = Boolean(phone && !phoneError);
   const canContinueFromAddress = Boolean(!hasAddressErrors);
@@ -107,6 +108,11 @@ export function VerificationFlowPage({
                 {hasAddressErrors && (
                   <p className="mt-2 text-xs text-red-600">Complete required fields.</p>
                 )}
+                {verificationError && (
+                  <p className="mt-2 text-xs text-red-600" role="alert">
+                    {verificationError}
+                  </p>
+                )}
               </StepSection>
             )}
           </div>
@@ -150,6 +156,7 @@ export function VerificationFlowPage({
                     return;
                   }
                   setIsVerifying(true);
+                  setVerificationError(null);
                   try {
                     const result = await getIdentityData({
                       selfieUrl: selfie,
@@ -157,6 +164,12 @@ export function VerificationFlowPage({
                       address,
                     });
                     onContinue(result);
+                  } catch (error) {
+                    setVerificationError(
+                      error instanceof Error
+                        ? error.message
+                        : 'Verification failed. Please try again.'
+                    );
                   } finally {
                     setIsVerifying(false);
                   }
