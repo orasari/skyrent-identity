@@ -28,7 +28,11 @@ The demo app uses a step-based flow and lazy-loads verification steps:
 # Install all dependencies
 pnpm install
 
-# Keep the SDK build up to date during dev (recommended)
+
+# Start SDK + demo app together
+pnpm dev
+
+# Or keep the SDK build up to date during dev (manual)
 pnpm --filter @skyrent/identity-sdk dev
 
 # Build the SDK package

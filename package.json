@@ -7,7 +7,7 @@
     "pnpm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "pnpm -r dev",
+    "dev": "pnpm --filter @skyrent/identity-sdk dev & pnpm --filter skyrent-demo dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
