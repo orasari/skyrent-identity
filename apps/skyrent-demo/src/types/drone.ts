@@ -2,8 +2,10 @@ export type Drone = {
   id: string;
   name: string;
   description: string;
+  category: 'filming' | 'cargo';
   rangeMiles: number;
   maxSpeedMph: number;
-  pricePerHour: number;
+  dailyPrice: number;
+  loadCapacityLbs?: number;
   icon: string;
 };

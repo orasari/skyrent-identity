@@ -127,7 +127,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
               onClick={handleCapture}
               type="button"
             >
-              📸 Capture Photo
+              Capture Photo
             </button>
             <button
               style={{ ...styles.button, ...styles.secondaryButton }}

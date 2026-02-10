@@ -1,6 +1,7 @@
 import { Suspense, lazy, useMemo, useState } from 'react';
 import type { AddressField, AddressValue } from '@skyrent/identity-sdk';
 import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
+import { useCart } from './hooks/useCart';
 
 const BrowseDronesPage = lazy(() =>
   import('./pages/BrowseDronesPage').then((module) => ({
@@ -20,7 +21,14 @@ const CheckoutPage = lazy(() =>
 
 function App() {
   const [view, setView] = useState<'browse' | 'verify' | 'checkout'>('browse');
-  const [selectedDroneId, setSelectedDroneId] = useState<string | null>(null);
+  const {
+    cartItems,
+    selectedDroneId,
+    addToCart,
+    updateCartDays,
+    removeFromCart,
+    resetCart,
+  } = useCart();
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [address, setAddress] = useState<AddressValue>(EMPTY_ADDRESS);
@@ -35,7 +43,7 @@ function App() {
   );
 
   const resetFlow = () => {
-    setSelectedDroneId(null);
+    resetCart();
     setPhone('');
     setPhoneError(null);
     setAddress(EMPTY_ADDRESS);
@@ -47,7 +55,7 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 text-white p-4 shadow-lg">
         <div className="container mx-auto">
-          <h1 className="text-3xl font-bold">🚁 SkyRent Drones</h1>
+          <h1 className="text-3xl font-bold">SkyRent Drones</h1>
           <p className="text-blue-100">Premium Drone Rental Service</p>
         </div>
       </header>
@@ -63,8 +71,10 @@ function App() {
           >
             <BrowseDronesPage
               drones={DRONES}
-              selectedDroneId={selectedDroneId}
-              onSelectDrone={setSelectedDroneId}
+              cartItems={cartItems}
+              onAddToCart={addToCart}
+              onUpdateCartDays={updateCartDays}
+              onRemoveFromCart={removeFromCart}
               onStartVerification={() => setView('verify')}
             />
           </Suspense>
@@ -80,6 +90,8 @@ function App() {
           >
             <VerificationFlowPage
               selectedDrone={selectedDrone}
+              drones={DRONES}
+              cartItems={cartItems}
               phone={phone}
               onPhoneChange={setPhone}
               phoneError={phoneError}
@@ -90,6 +102,8 @@ function App() {
               onAddressErrors={setAddressErrors}
               selfie={selfie}
               onSelfieCapture={setSelfie}
+              onUpdateCartDays={updateCartDays}
+              onRemoveFromCart={removeFromCart}
               onBack={() => setView('browse')}
               onContinue={() => setView('checkout')}
             />
@@ -106,9 +120,13 @@ function App() {
           >
             <CheckoutPage
               selectedDrone={selectedDrone}
+              drones={DRONES}
+              cartItems={cartItems}
               phone={phone}
               address={address}
               selfie={selfie}
+              onUpdateCartDays={updateCartDays}
+              onRemoveFromCart={removeFromCart}
               onBack={() => setView('verify')}
               onStartOver={() => {
                 resetFlow();
