@@ -1,5 +1,6 @@
 // Core types
 export * from './core/types';
+export { getIdentityData } from './core/getIdentityData';
 
 // Components
 export { SelfieCapture } from './components/SelfieCapture';
