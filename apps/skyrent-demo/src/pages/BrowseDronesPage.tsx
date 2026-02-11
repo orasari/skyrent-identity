@@ -31,10 +31,7 @@ export function BrowseDronesPage({
     () => drones.filter((drone) => drone.category === 'filming'),
     [drones]
   );
-  const cargoDrones = useMemo(
-    () => drones.filter((drone) => drone.category === 'cargo'),
-    [drones]
-  );
+  const cargoDrones = useMemo(() => drones.filter((drone) => drone.category === 'cargo'), [drones]);
 
   const visibleDrones = activeCategory === 'filming' ? filmingDrones : cargoDrones;
 
@@ -54,6 +51,7 @@ export function BrowseDronesPage({
   return (
     <div className="bg-white rounded-[18px] shadow-[0_18px_45px_rgba(15,23,42,0.08)] p-8">
       <Layout
+        showCartButton
         left={
           <>
             <div className="flex justify-between gap-6 mb-6">

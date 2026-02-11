@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { SelfieCaptureProps } from './types';
+import { getCameraErrorDetails } from './errorDetails';
 import { useCamera } from './useCamera';
 import { styles } from './styles';
 
@@ -57,6 +58,8 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
     }
     stopCamera();
   };
+
+  const errorDetails = getCameraErrorDetails(state.error);
 
   return (
     <div style={{ ...styles.container, ...(className ? {} : {}) }} className={className}>
@@ -165,15 +168,22 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
             onClick={startCamera}
             type="button"
           >
-            Try Again
+            {errorDetails?.buttonLabel ?? 'Try Again'}
           </button>
         )}
       </div>
 
-      {state.error && (
-        <div style={styles.errorContainer}>
-          <strong>Camera Error</strong>
-          <p style={{ margin: '0.5rem 0 0' }}>{state.error}</p>
+      {state.error && errorDetails && (
+        <div style={styles.errorContainer} role="alert">
+          <strong>{errorDetails.title}</strong>
+          <p style={{ margin: '0.5rem 0 0' }}>{errorDetails.message}</p>
+          <ul style={{ margin: '0.75rem 0 0', paddingLeft: '1.1rem', textAlign: 'left' }}>
+            {errorDetails.steps.map((step) => (
+              <li key={step} style={{ marginBottom: '0.35rem' }}>
+                {step}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

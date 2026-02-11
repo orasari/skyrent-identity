@@ -12,6 +12,7 @@ This project consists of two main packages:
 ### Demo App Flow & Performance
 
 The demo app uses a step-based flow and lazy-loads verification steps:
+
 - Selfie capture renders first.
 - Phone verification and address form modules load only after the selfie step completes.
 
@@ -21,6 +22,21 @@ The demo app uses a step-based flow and lazy-loads verification steps:
 
 - Node.js 18 or higher
 - pnpm 8.0 or higher
+
+### Quickstart
+
+```bash
+# Install dependencies
+pnpm install
+
+# Configure environment variables
+cp apps/skyrent-demo/.env.example apps/skyrent-demo/.env
+
+# Start SDK + demo app together
+pnpm dev
+```
+
+The demo application will be available at `http://localhost:5173`
 
 ### Installation
 
@@ -42,8 +58,6 @@ pnpm --filter @skyrent/identity-sdk build
 pnpm --filter skyrent-demo dev
 ```
 
-The demo application will be available at `http://localhost:5173`
-
 ### Environment Variables
 
 The demo app reads configuration from environment variables in `apps/skyrent-demo/.env`.
@@ -57,6 +71,19 @@ Required variables:
 
 - `VITE_APP_NAME`
 - `VITE_APP_TAGLINE`
+
+### Testing
+
+```bash
+# Run all tests across workspaces
+pnpm test
+
+# SDK only
+pnpm --filter @skyrent/identity-sdk test
+
+# Demo app only
+pnpm --filter skyrent-demo test
+```
 
 ### App Configuration
 
@@ -89,6 +116,43 @@ export function VerificationStep() {
 
 Note: Camera access requires HTTPS in production (localhost is exempt).
 
+### SDK Usage Example
+
+```tsx
+import { useState } from 'react';
+import { AddressForm, PhoneInput, SelfieCapture, getIdentityData } from '@skyrent/identity-sdk';
+
+export function IdentityFlow() {
+  const [selfie, setSelfie] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState({
+    line1: '',
+    line2: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+  });
+
+  const handleVerify = async () => {
+    if (!selfie) return;
+    const result = await getIdentityData({ selfieUrl: selfie, phone, address });
+    console.log(result);
+  };
+
+  return (
+    <div>
+      <SelfieCapture onCapture={setSelfie} onCancel={() => setSelfie(null)} />
+      <PhoneInput value={phone} onChange={setPhone} />
+      <AddressForm value={address} onChange={setAddress} />
+      <button type="button" onClick={handleVerify}>
+        Verify
+      </button>
+    </div>
+  );
+}
+```
+
 ### Building for Production
 
 ```bash
@@ -104,6 +168,8 @@ pnpm --filter skyrent-demo build
 
 ```
 skyrent-identity/
+├── ARCHITECTURE.md                   # Key decisions + extension guide
+├── CHANGELOG.md                      # Release notes
 ├── packages/
 │   └── identity-sdk/
 │       ├── src/
@@ -232,6 +298,7 @@ its own TypeScript, Vite, and Tailwind configurations inside `apps/skyrent-demo`
 ### Pre-commit Hooks
 
 This repo uses Husky + lint-staged to lint/format staged files before each commit.
+Pre-commit automation is enabled once hooks are installed via `pnpm prepare`.
 Install hooks locally with:
 
 ```bash

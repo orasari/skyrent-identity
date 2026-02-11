@@ -65,6 +65,43 @@ function VerificationFlow() {
 }
 ```
 
+### End-to-end Usage Example
+
+```tsx
+import { useState } from 'react';
+import { AddressForm, PhoneInput, SelfieCapture, getIdentityData } from '@skyrent/identity-sdk';
+
+export function IdentityFlow() {
+  const [selfie, setSelfie] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState({
+    line1: '',
+    line2: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+  });
+
+  const handleVerify = async () => {
+    if (!selfie) return;
+    const result = await getIdentityData({ selfieUrl: selfie, phone, address });
+    console.log(result);
+  };
+
+  return (
+    <div>
+      <SelfieCapture onCapture={setSelfie} onCancel={() => setSelfie(null)} />
+      <PhoneInput value={phone} onChange={setPhone} />
+      <AddressForm value={address} onChange={setAddress} />
+      <button type="button" onClick={handleVerify}>
+        Verify
+      </button>
+    </div>
+  );
+}
+```
+
 ## Components
 
 ### SelfieCapture
