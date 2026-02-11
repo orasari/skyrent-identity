@@ -4,6 +4,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { getAppConfig } from './config/appConfig';
 import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
 import { useCart } from './hooks/useCart';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { UNIT_SYSTEM_STORAGE_KEY, type UnitSystem } from './utils/unitSystem';
 
 const BrowseDronesPage = lazy(() =>
   import('./pages/BrowseDronesPage').then((module) => ({
@@ -27,7 +29,11 @@ const VerificationResultPage = lazy(() =>
 );
 
 function App() {
-  const { config, error: configError } = getAppConfig();
+  const { config, warning: configWarning } = getAppConfig();
+  const [unitSystem, setUnitSystemState] = useLocalStorage<UnitSystem>(
+    UNIT_SYSTEM_STORAGE_KEY,
+    'imperial'
+  );
   const [view, setView] = useState<'browse' | 'verify' | 'result' | 'checkout'>('browse');
   const {
     cartItems,
@@ -65,6 +71,11 @@ function App() {
     setIdentityResult(null);
   };
 
+  const handleToggleUnits = () => {
+    const next = unitSystem === 'imperial' ? 'metric' : 'imperial';
+    setUnitSystemState(next);
+  };
+
   const loadingCard = (
     <div className="bg-white rounded-lg shadow-md p-6">
       <p className="text-gray-600">Loading component...</p>
@@ -78,41 +89,37 @@ function App() {
     </div>
   );
 
-  if (configError) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-blue-600 text-white p-4 shadow-lg">
-          <div className="container mx-auto">
-            <h1 className="text-3xl font-bold">SkyRent Drones</h1>
-            <p className="text-blue-100">Premium Drone Rental Service</p>
-          </div>
-        </header>
-        <main className="container mx-auto p-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <p className="text-gray-900 font-semibold">Configuration error</p>
-            <p className="text-gray-600 text-sm mt-2">{configError}</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 text-white p-4 shadow-lg">
-        <div className="container mx-auto">
-          <h1 className="text-3xl font-bold">{config?.appName}</h1>
-          <p className="text-blue-100">{config?.appTagline}</p>
+        <div className="container mx-auto flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">{config?.appName}</h1>
+            <p className="text-blue-100">{config?.appTagline}</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleToggleUnits}
+            className="rounded-lg border border-blue-200 bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-400"
+          >
+            Units: {unitSystem === 'imperial' ? 'Imperial' : 'Metric'}
+          </button>
         </div>
       </header>
 
       <main className="container mx-auto p-8">
+        {configWarning && (
+          <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            {configWarning} Using defaults from the app config.
+          </div>
+        )}
         {view === 'browse' && (
           <ErrorBoundary fallback={errorCard}>
             <Suspense fallback={loadingCard}>
               <BrowseDronesPage
                 drones={DRONES}
                 cartItems={cartItems}
+                unitSystem={unitSystem}
                 onAddToCart={addToCart}
                 onUpdateCartDays={updateCartDays}
                 onRemoveFromCart={removeFromCart}

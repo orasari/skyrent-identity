@@ -32,6 +32,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   });
   const [localNumber, setLocalNumber] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const dialCode = country.dialCode;
@@ -101,10 +102,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
-    setLocalNumber(nextValue);
+    const digits = normalizeDigits(nextValue);
+    setWarning(nextValue === digits ? null : 'Only numbers are allowed.');
 
     if (nextValue.trim().startsWith('+')) {
-      const digits = normalizeDigits(nextValue);
       const matched = findCountryByDialCode(digits);
       if (matched) {
         setCountry(matched);
@@ -115,7 +116,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       }
     }
 
-    const digits = normalizeDigits(nextValue);
+    setLocalNumber(digits);
     if (digits) {
       onChange(buildE164(dialCode, digits));
     } else {
@@ -180,6 +181,11 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           aria-describedby={error ? errorId : undefined}
         />
       </div>
+      {warning && (
+        <p style={styles.hint} className={classNames?.hint}>
+          {warning}
+        </p>
+      )}
       <div style={styles.resultPanel}>
         <div style={styles.resultRow}>
           <div>

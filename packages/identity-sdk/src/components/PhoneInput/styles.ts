@@ -34,6 +34,7 @@ export const styles = {
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
     color: '#374151',
+    backgroundColor: '#ffffff',
   },
   inputError: {
     borderColor: '#dc2626',

@@ -5,17 +5,22 @@ type AppConfig = {
 
 type AppConfigResult = {
   config?: AppConfig;
-  error?: string;
+  warning?: string;
 };
 
 const REQUIRED_ENV_VARS = ['VITE_APP_NAME', 'VITE_APP_TAGLINE'] as const;
+const DEFAULT_CONFIG: AppConfig = {
+  appName: 'SkyRent Drones',
+  appTagline: 'Premium Drone Rental Service',
+};
 
 export const getAppConfig = (): AppConfigResult => {
   const missing = REQUIRED_ENV_VARS.filter((key) => !import.meta.env[key]);
 
   if (missing.length > 0) {
     return {
-      error: `Missing required env vars: ${missing.join(', ')}.`,
+      config: DEFAULT_CONFIG,
+      warning: `Missing required env vars: ${missing.join(', ')}. Please add your .env with the correct values.`,
     };
   }
 

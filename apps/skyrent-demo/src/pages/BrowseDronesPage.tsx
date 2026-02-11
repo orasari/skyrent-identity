@@ -8,6 +8,7 @@ import { formatCurrency, formatDroneSpecs } from '../utils/formatters';
 interface BrowseDronesPageProps {
   drones: Drone[];
   cartItems: CartItem[];
+  unitSystem: 'imperial' | 'metric';
   onAddToCart: (id: string, days: number) => void;
   onUpdateCartDays: (id: string, days: number) => void;
   onRemoveFromCart: (id: string) => void;
@@ -17,6 +18,7 @@ interface BrowseDronesPageProps {
 export function BrowseDronesPage({
   drones,
   cartItems,
+  unitSystem,
   onAddToCart,
   onUpdateCartDays,
   onRemoveFromCart,
@@ -68,14 +70,14 @@ export function BrowseDronesPage({
               </div>
             </div>
 
-            <div className="inline-flex gap-3 p-1.5 rounded-full bg-slate-50 border border-slate-200">
+            <div className="inline-flex gap-2 rounded-full bg-slate-50 border border-slate-200 p-1.5 shadow-[0_8px_18px_rgba(15,23,42,0.06)]">
               <button
                 type="button"
                 onClick={() => setActiveCategory('filming')}
-                className={`border-none bg-transparent px-4.5 py-2 rounded-full text-[0.85rem] font-semibold ${
+                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition ${
                   activeCategory === 'filming'
-                    ? 'bg-white text-slate-900 shadow-[0_6px_18px_rgba(15,23,42,0.12)]'
-                    : 'text-slate-600'
+                    ? 'bg-white text-slate-900 shadow-[0_8px_16px_rgba(15,23,42,0.12)]'
+                    : 'bg-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Filming drones
@@ -83,10 +85,10 @@ export function BrowseDronesPage({
               <button
                 type="button"
                 onClick={() => setActiveCategory('cargo')}
-                className={`border-none bg-transparent px-4.5 py-2 rounded-full text-[0.85rem] font-semibold ${
+                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition ${
                   activeCategory === 'cargo'
-                    ? 'bg-white text-slate-900 shadow-[0_6px_18px_rgba(15,23,42,0.12)]'
-                    : 'text-slate-600'
+                    ? 'bg-white text-slate-900 shadow-[0_8px_16px_rgba(15,23,42,0.12)]'
+                    : 'bg-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Cargo drones
@@ -98,7 +100,7 @@ export function BrowseDronesPage({
                 : 'Lift capacity for logistics and delivery workflows.'}
             </p>
 
-            <div className="grid gap-4.5 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+            <div className="grid gap-6 md:gap-7 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               {visibleDrones.map((drone) => {
                 const isInCart = cartItems.some((item) => item.droneId === drone.id);
                 const currentDays = getDayCount(drone.id);
@@ -107,20 +109,27 @@ export function BrowseDronesPage({
                     key={drone.id}
                     className={`rounded-2xl border p-5 bg-white shadow-[0_6px_16px_rgba(15,23,42,0.05)] flex flex-col gap-3.5 transition ${
                       isInCart
-                        ? 'border-emerald-200 bg-emerald-50 shadow-[0_16px_32px_rgba(22,163,74,0.12)]'
+                        ? 'border-emerald-300 bg-emerald-50 shadow-[0_18px_36px_rgba(16,185,129,0.22)] ring-2 ring-emerald-200'
                         : 'border-slate-200 hover:border-emerald-200 hover:shadow-[0_14px_28px_rgba(15,23,42,0.1)] hover:-translate-y-0.5'
                     }`}
                   >
                     <div className="flex justify-between gap-3">
                       <div>
                         <h3 className="text-[1.05rem] font-bold text-slate-900">{drone.name}</h3>
-                        <p className="text-[0.85rem] text-slate-500 mt-1">
+                        <p className="text-[0.85rem] leading-5 text-slate-500 mt-1 min-h-[3.75rem] md:min-h-[2.5rem]">
                           {drone.description}
                         </p>
                       </div>
-                      {drone.icon && (
-                        <span className="text-sm font-semibold text-slate-500">{drone.icon}</span>
-                      )}
+                      <div className="flex flex-col items-end gap-2">
+                        {isInCart && (
+                          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[0.7rem] font-semibold text-emerald-800">
+                            Selected
+                          </span>
+                        )}
+                        {drone.icon && (
+                          <span className="text-sm font-semibold text-slate-500">{drone.icon}</span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-2xl font-bold text-slate-900">
@@ -129,7 +138,7 @@ export function BrowseDronesPage({
                       <span className="text-[0.85rem] text-slate-500">per day</span>
                     </div>
                     <div className="text-[0.82rem] text-slate-600">
-                      {formatDroneSpecs(drone)}
+                      {formatDroneSpecs(drone, unitSystem)}
                     </div>
                     <div className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5">
                       <span className="text-[0.8rem] font-semibold text-slate-600">Days</span>
@@ -161,7 +170,7 @@ export function BrowseDronesPage({
                       disabled={isInCart}
                       className={`mt-auto rounded-xl px-3.5 py-2.5 text-[0.9rem] font-semibold transition ${
                         isInCart
-                          ? 'bg-emerald-200 text-emerald-900 cursor-default'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200 cursor-default'
                           : 'bg-emerald-600 text-white hover:opacity-90'
                       }`}
                     >
@@ -179,6 +188,7 @@ export function BrowseDronesPage({
             cartItems={cartItems}
             onUpdateCartDays={onUpdateCartDays}
             onRemoveFromCart={onRemoveFromCart}
+            controlsEnabled
             primaryAction={{
               label: 'Continue',
               disabled: cartItems.length === 0,

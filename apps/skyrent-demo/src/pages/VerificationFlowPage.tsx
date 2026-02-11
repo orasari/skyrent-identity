@@ -1,5 +1,5 @@
 import { SelfieCapture, getIdentityData } from '@skyrent/identity-sdk';
-import { lazy, useMemo, useState } from 'react';
+import { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../components/Button';
 import { Layout } from '../components/Layout';
 import { RentalSummaryCard } from '../components/RentalSummaryCard';
@@ -51,6 +51,17 @@ export function VerificationFlowPage({
   const canContinueFromSelfie = Boolean(selfie);
   const canContinueFromPhone = Boolean(phone && !phoneError);
   const canContinueFromAddress = Boolean(!hasAddressErrors);
+  const selfieSectionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (step !== 'selfie') {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      selfieSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [step]);
 
   /**
    * Run the SDK verification and handle UI loading/error states.
@@ -80,7 +91,7 @@ export function VerificationFlowPage({
   return (
     <Layout
       left={
-        <div className="bg-white rounded-lg shadow-md p-6 space-y-8">
+        <div className="bg-white rounded-lg shadow-md p-5 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
@@ -96,18 +107,20 @@ export function VerificationFlowPage({
             <Button label="← Back" onClick={onBack} />
           </div>
 
-          <div className="grid gap-8">
+          <div className="grid gap-6">
             {step === 'selfie' && (
-              <StepSection
-                stepLabel="Step 1"
-                title="Selfie Capture"
-                description="Take a quick selfie to verify identity."
-              >
-                <SelfieCapture onCapture={onSelfieCapture} onCancel={() => onSelfieCapture(null)} />
-                <div className="mt-3 text-xs text-gray-500">
-                  {selfie ? 'Selfie captured.' : 'No selfie captured yet.'}
-                </div>
-              </StepSection>
+              <div ref={selfieSectionRef}>
+                <StepSection
+                  stepLabel="Step 1"
+                  title="Selfie Capture"
+                  description="Take a quick selfie to verify identity."
+                >
+                  <SelfieCapture onCapture={onSelfieCapture} onCancel={() => onSelfieCapture(null)} />
+                  <div className="mt-3 text-xs text-gray-500">
+                    {selfie ? 'Selfie captured.' : 'No selfie captured yet.'}
+                  </div>
+                </StepSection>
+              </div>
             )}
 
             {step === 'phone' && (
@@ -118,7 +131,6 @@ export function VerificationFlowPage({
                 fallback={<p className="text-sm text-gray-500">Loading phone input...</p>}
               >
                 <PhoneInput value={phone} onChange={onPhoneChange} onError={onPhoneError} />
-                {phoneError && <p className="mt-2 text-xs text-red-600">{phoneError}</p>}
               </StepSection>
             )}
 
@@ -196,6 +208,7 @@ export function VerificationFlowPage({
           cartItems={cartItems}
           onUpdateCartDays={onUpdateCartDays}
           onRemoveFromCart={onRemoveFromCart}
+          controlsEnabled={false}
         />
       }
     />

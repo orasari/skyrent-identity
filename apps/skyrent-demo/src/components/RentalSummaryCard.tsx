@@ -8,6 +8,7 @@ interface RentalSummaryCardProps {
   cartItems: CartItem[];
   onUpdateCartDays: (id: string, days: number) => void;
   onRemoveFromCart: (id: string) => void;
+  controlsEnabled?: boolean;
   primaryAction?: {
     label: string;
     disabled?: boolean;
@@ -20,6 +21,7 @@ export function RentalSummaryCard({
   cartItems,
   onUpdateCartDays,
   onRemoveFromCart,
+  controlsEnabled = true,
   primaryAction,
 }: RentalSummaryCardProps) {
   const cartSummary = useMemo(() => {
@@ -64,7 +66,12 @@ export function RentalSummaryCard({
               <button
                 type="button"
                 onClick={() => onRemoveFromCart(item.droneId)}
-                className="border-none bg-transparent text-slate-400 text-[0.75rem] font-semibold cursor-pointer"
+                disabled={!controlsEnabled}
+                className={`border-none bg-transparent text-[0.75rem] font-semibold ${
+                  controlsEnabled
+                    ? 'text-slate-400 cursor-pointer'
+                    : 'text-slate-300 cursor-not-allowed'
+                }`}
               >
                 Remove
               </button>
@@ -74,9 +81,12 @@ export function RentalSummaryCard({
               <div className="inline-flex items-center gap-2">
                 <button
                   type="button"
-                  className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900"
+                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold ${
+                    controlsEnabled ? 'text-slate-900' : 'text-slate-300 cursor-not-allowed'
+                  }`}
                   onClick={() => onUpdateCartDays(item.droneId, item.days - 1)}
                   aria-label="Decrease rental days"
+                  disabled={!controlsEnabled}
                 >
                   −
                 </button>
@@ -85,9 +95,12 @@ export function RentalSummaryCard({
                 </span>
                 <button
                   type="button"
-                  className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900"
+                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold ${
+                    controlsEnabled ? 'text-slate-900' : 'text-slate-300 cursor-not-allowed'
+                  }`}
                   onClick={() => onUpdateCartDays(item.droneId, item.days + 1)}
                   aria-label="Increase rental days"
+                  disabled={!controlsEnabled}
                 >
                   +
                 </button>
@@ -95,7 +108,9 @@ export function RentalSummaryCard({
             </div>
             <div className="flex justify-between text-[0.85rem] text-slate-700">
               <span className="text-slate-500">Line total</span>
-              <span className="font-semibold text-slate-900">{formatCurrency(item.total)}</span>
+              <span className="font-semibold text-slate-900">
+                {formatCurrency(item.total)}
+              </span>
             </div>
           </div>
         ))}

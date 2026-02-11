@@ -29,11 +29,29 @@ export const formatCityLine = (city: string, region: string, postalCode: string)
 /**
  * Format a concise specs line for drone cards.
  */
-export const formatDroneSpecs = (specs: {
-  rangeMiles: number;
-  maxSpeedMph: number;
-  loadCapacityLbs?: number;
-}) => {
+export const formatDroneSpecs = (
+  specs: {
+    rangeMiles: number;
+    maxSpeedMph: number;
+    loadCapacityLbs?: number;
+  },
+  unitSystem: 'imperial' | 'metric' = 'imperial'
+) => {
+  if (unitSystem === 'metric') {
+    const rangeKm = Math.round(specs.rangeMiles * 1.60934);
+    const speedKph = Math.round(specs.maxSpeedMph * 1.60934);
+    const capacityKg = specs.loadCapacityLbs
+      ? Math.round(specs.loadCapacityLbs * 0.453592)
+      : null;
+
+    const parts = [
+      `Range ${rangeKm}km`,
+      `${speedKph}km/h`,
+      capacityKg ? `${capacityKg}kg` : null,
+    ].filter(Boolean);
+    return parts.join(' • ');
+  }
+
   const parts = [
     `Range ${specs.rangeMiles}mi`,
     `${specs.maxSpeedMph}mph`,

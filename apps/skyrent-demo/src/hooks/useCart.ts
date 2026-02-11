@@ -28,8 +28,12 @@ export function useCart() {
    * Update rental days for an existing cart item.
    */
   const updateCartDays = (droneId: string, days: number) => {
+    if (days <= 0) {
+      setCartItems((prev) => prev.filter((item) => item.droneId !== droneId));
+      return;
+    }
     setCartItems((prev) =>
-      prev.map((item) => (item.droneId === droneId ? { ...item, days: Math.max(1, days) } : item))
+      prev.map((item) => (item.droneId === droneId ? { ...item, days } : item))
     );
   };
 

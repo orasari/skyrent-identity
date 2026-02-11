@@ -175,6 +175,7 @@ export function CheckoutPage({
           cartItems={cartItems}
           onUpdateCartDays={onUpdateCartDays}
           onRemoveFromCart={onRemoveFromCart}
+          controlsEnabled={false}
         />
       }
     />

@@ -25,6 +25,7 @@ export const styles = {
     padding: '0.55rem 0.75rem',
     fontSize: '0.875rem',
     color: '#111827',
+    backgroundColor: '#ffffff',
   },
   inputError: {
     borderColor: '#dc2626',

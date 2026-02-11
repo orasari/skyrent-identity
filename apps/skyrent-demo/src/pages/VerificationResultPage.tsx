@@ -123,6 +123,7 @@ export function VerificationResultPage({
           cartItems={cartItems}
           onUpdateCartDays={onUpdateCartDays}
           onRemoveFromCart={onRemoveFromCart}
+          controlsEnabled={false}
         />
       }
     />
