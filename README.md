@@ -44,6 +44,26 @@ pnpm --filter skyrent-demo dev
 
 The demo application will be available at `http://localhost:5173`
 
+### Environment Variables
+
+The demo app reads configuration from environment variables in `apps/skyrent-demo/.env`.
+Copy the example file and adjust as needed:
+
+```bash
+cp apps/skyrent-demo/.env.example apps/skyrent-demo/.env
+```
+
+Required variables:
+
+- `VITE_APP_NAME`
+- `VITE_APP_TAGLINE`
+
+### App Configuration
+
+The demo app reads its runtime header config from `apps/skyrent-demo/src/config/appConfig.ts`.
+If required variables are missing, the app shows a configuration error instead of rendering
+an incomplete UI. Update `apps/skyrent-demo/.env` to customize the app name and tagline.
+
 ### Backend / API Notes
 
 This project does not require a backend service. The demo uses a client-side mock in

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useMemo, useState } from 'react';
 import type { AddressField, AddressValue, IdentityData } from '@skyrent/identity-sdk';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { getAppConfig } from './config/appConfig';
 import { DRONES, EMPTY_ADDRESS } from './utils/demoData';
 import { useCart } from './hooks/useCart';
 
@@ -26,6 +27,7 @@ const VerificationResultPage = lazy(() =>
 );
 
 function App() {
+  const { config, error: configError } = getAppConfig();
   const [view, setView] = useState<'browse' | 'verify' | 'result' | 'checkout'>('browse');
   const {
     cartItems,
@@ -76,12 +78,31 @@ function App() {
     </div>
   );
 
+  if (configError) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-blue-600 text-white p-4 shadow-lg">
+          <div className="container mx-auto">
+            <h1 className="text-3xl font-bold">SkyRent Drones</h1>
+            <p className="text-blue-100">Premium Drone Rental Service</p>
+          </div>
+        </header>
+        <main className="container mx-auto p-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <p className="text-gray-900 font-semibold">Configuration error</p>
+            <p className="text-gray-600 text-sm mt-2">{configError}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-blue-600 text-white p-4 shadow-lg">
         <div className="container mx-auto">
-          <h1 className="text-3xl font-bold">SkyRent Drones</h1>
-          <p className="text-blue-100">Premium Drone Rental Service</p>
+          <h1 className="text-3xl font-bold">{config?.appName}</h1>
+          <p className="text-blue-100">{config?.appTagline}</p>
         </div>
       </header>
 

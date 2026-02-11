@@ -1,0 +1,12 @@
+// Defines the expected VITE_ env vars for type safety and autocomplete.
+
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_APP_NAME: string;
+  readonly VITE_APP_TAGLINE: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
