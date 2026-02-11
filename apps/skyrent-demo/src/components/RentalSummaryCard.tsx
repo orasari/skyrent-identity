@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import type { CartItem } from '../types/cart';
 import type { Drone } from '../types/drone';
 import { formatCurrency, formatDailyPrice } from '../utils/formatters';
+import { buildCartSummary, calculateCartTotal } from '../utils/cart';
 
 interface RentalSummaryCardProps {
   drones: Drone[];
@@ -25,22 +26,10 @@ export function RentalSummaryCard({
   primaryAction,
 }: RentalSummaryCardProps) {
   const cartSummary = useMemo(() => {
-    return cartItems.flatMap((item) => {
-      const drone = drones.find((entry) => entry.id === item.droneId);
-      if (!drone) {
-        return [];
-      }
-      return [
-        {
-          ...item,
-          drone,
-          total: drone.dailyPrice * item.days,
-        },
-      ];
-    });
+    return buildCartSummary(cartItems, drones);
   }, [cartItems, drones]);
 
-  const cartTotal = cartSummary.reduce((sum, item) => sum + item.total, 0);
+  const cartTotal = calculateCartTotal(cartSummary);
 
   return (
     <div className="border border-slate-200 rounded-[18px] p-5 bg-white shadow-[0_16px_32px_rgba(15,23,42,0.08)] flex flex-col gap-4.5">

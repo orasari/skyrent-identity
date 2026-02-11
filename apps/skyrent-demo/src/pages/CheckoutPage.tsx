@@ -11,7 +11,7 @@ import {
   formatCurrency,
   formatDailyPrice,
 } from '../utils/formatters';
-
+import { buildCartSummary, calculateCartTotal } from '../utils/cart';
 interface CheckoutPageProps {
   drones: Drone[];
   cartItems: CartItem[];
@@ -38,20 +38,8 @@ export function CheckoutPage({
   onStartOver,
 }: CheckoutPageProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const cartSummary = cartItems.flatMap((item) => {
-    const drone = drones.find((entry) => entry.id === item.droneId);
-    if (!drone) {
-      return [];
-    }
-    return [
-      {
-        ...item,
-        drone,
-        total: drone.dailyPrice * item.days,
-      },
-    ];
-  });
-  const cartTotal = cartSummary.reduce((sum, item) => sum + item.total, 0);
+  const cartSummary = buildCartSummary(cartItems, drones);
+  const cartTotal = calculateCartTotal(cartSummary);
   const isVerified = identityResult?.status === 'verified';
 
   const verifiedAddress = identityResult?.address;
