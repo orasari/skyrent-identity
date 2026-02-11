@@ -206,6 +206,21 @@ The demo app imports the built SDK from `dist/` rather than directly from `src/`
 
 This project uses ESLint and Prettier to maintain code quality and consistency.
 
+The demo app inherits the root ESLint/Prettier/EditorConfig settings, while keeping
+its own TypeScript, Vite, and Tailwind configurations inside `apps/skyrent-demo`.
+
+### Pre-commit Hooks
+
+This repo uses Husky + lint-staged to lint/format staged files before each commit.
+Install hooks locally with:
+
+```bash
+pnpm prepare
+```
+
+Commit messages are enforced via commitlint to start with one of: `feat:`, `fix:`, or `refactor:`.
+Staged files are checked with ESLint and formatted with Prettier on commit.
+
 **ESLint** - Identifies problematic patterns and potential bugs:
 
 ```bash
