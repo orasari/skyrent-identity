@@ -2,6 +2,12 @@
 
 A monorepo containing an identity verification SDK and a demonstration application for drone rental services.
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.3.0-61DAFB?logo=react&logoColor=0B1120)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.1-646CFF?logo=vite&logoColor=FFD342)](https://vitejs.dev/)
+[![Tailwind_CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.28.2-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
+
 ## Project Overview
 
 This project consists of two main packages:
@@ -23,10 +29,12 @@ The demo app uses a step-based flow and lazy-loads verification steps:
 - Node.js 18 or higher
 - pnpm 8.0 or higher
 
-### Quickstart
+### 🚀 Quick Start
 
 ```bash
-# Install dependencies
+# Clone and install
+git clone https://github.com/orasari/skyrent-identity.git
+cd skyrent-identity
 pnpm install
 
 # Configure environment variables
@@ -36,7 +44,7 @@ cp apps/skyrent-demo/.env.example apps/skyrent-demo/.env
 pnpm dev
 ```
 
-The demo application will be available at `http://localhost:5173`
+Open `http://localhost:5173` in your browser 🎉
 
 ### Installation
 

@@ -29,37 +29,40 @@ pnpm add @skyrent/identity-sdk
 ### Basic Example
 
 ```tsx
-import {
-  SelfieCapture,
-  PhoneInput,
-  AddressForm,
-  getIdentityData,
-  type IdentityData,
-} from '@skyrent/identity-sdk';
+import { useState } from 'react';
+import { AddressForm, PhoneInput, SelfieCapture, getIdentityData } from '@skyrent/identity-sdk';
 
 function VerificationFlow() {
-  const [selfie, setSelfie] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [address, setAddress] = useState<Address | null>(null);
+  const [selfie, setSelfie] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState({
+    line1: '',
+    line2: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+  });
 
   const handleVerify = async () => {
-    const result: IdentityData = await getIdentityData({
+    if (!selfie) return;
+    const result = await getIdentityData({
       selfieUrl: selfie,
-      phone: phone,
-      address: address!,
+      phone,
+      address,
     });
 
     console.log('Verification Result:', result);
-    // result.status will be 'verified' or 'failed'
-    // result.score will be 0-100
   };
 
   return (
     <div>
-      <SelfieCapture onCapture={setSelfie} />
+      <SelfieCapture onCapture={setSelfie} onCancel={() => setSelfie(null)} />
       <PhoneInput value={phone} onChange={setPhone} />
-      <AddressForm onSubmit={setAddress} />
-      <button onClick={handleVerify}>Verify Identity</button>
+      <AddressForm value={address} onChange={setAddress} />
+      <button type="button" onClick={handleVerify}>
+        Verify Identity
+      </button>
     </div>
   );
 }
@@ -135,11 +138,14 @@ International phone number input with validation.
 <PhoneInput value={phone} onChange={(phone: string) => setPhone(phone)} defaultCountry="US" />
 ```
 
-**Props:**
+**Props (core):**
 
 - `value`: `string` - Current phone number value
 - `onChange`: `(phone: string) => void` - Callback with normalized phone (E.164 format)
-- `defaultCountry`: `string` - Default country code (ISO 3166-1 alpha-2)
+- `onError?`: `(error: string | null) => void` - Validation error callback
+- `defaultCountry?`: `string` - Default country code (ISO 3166-1 alpha-2)
+- `className?`: `string` - Extra class name applied to the root container
+- `classNames?`: `Partial<Record<'root' | 'row' | 'select' | 'input' | 'label' | 'hint' | 'error', string>>` - Fine-grained class overrides for sub-elements
 
 **Features:**
 
@@ -153,13 +159,26 @@ International phone number input with validation.
 Structured address input form.
 
 ```tsx
-<AddressForm onSubmit={(address: Address) => setAddress(address)} initialValues={existingAddress} />
+<AddressForm
+  value={address}
+  onChange={setAddress}
+  onError={(errors) => {
+    // errors is either a map of field -> error string, or null when valid
+    console.log(errors);
+  }}
+/>
 ```
 
-**Props:**
+**Props (core):**
 
-- `onSubmit`: `(address: Address) => void` - Callback with validated address object
-- `initialValues`: `Address` - Pre-populate form fields
+- `value`: `AddressValue` - Current address form value
+- `onChange`: `(value: AddressValue) => void` - Callback with updated value
+- `onError?`: `(errors: Partial<Record<AddressField, string>> | null) => void` - Validation error map, or `null` when valid
+- `requiredFields?`: `AddressField[]` - Override which fields are required
+- `labels?`: `Partial<Record<AddressField, string>>` - Custom labels
+- `placeholders?`: `Partial<Record<AddressField, string>>` - Custom placeholders
+- `className?`: `string` - Additional class for the root container
+- `classNames?`: `Partial<Record<'root' | 'field' | 'row' | 'label' | 'input' | 'select' | 'helper' | 'error', string>>` - Sub-element class overrides
 
 **Address Object:**
 
@@ -178,6 +197,14 @@ type Address = {
 - Field-level validation
 - Required field indicators
 - Country-aware postal code validation
+
+### Theming & styling
+
+The SDK components intentionally ship with minimal, neutral inline styles so they can be dropped into any application without pulling in a specific CSS framework. To align them with your design system:
+
+- Use `className` on each component to attach your own utility classes or BEM-style selectors to the root.
+- Use `classNames` (where available) to target sub-elements such as labels, inputs, rows, and error text.
+- Override styles in your own CSS or Tailwind layers; the SDK does not depend on Tailwind itself.
 
 ## Functions
 

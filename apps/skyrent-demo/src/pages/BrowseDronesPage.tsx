@@ -56,7 +56,7 @@ export function BrowseDronesPage({
           <>
             <div className="flex justify-between gap-6 mb-6">
               <div>
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.12em] text-emerald-600 mb-2">
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.12em] text-emerald-700 mb-2">
                   Step 1 of 4
                 </p>
                 <h2 className="text-[1.75rem] font-bold text-slate-900 mb-1.5">
@@ -72,7 +72,7 @@ export function BrowseDronesPage({
               <button
                 type="button"
                 onClick={() => setActiveCategory('filming')}
-                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition ${
+                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                   activeCategory === 'filming'
                     ? 'bg-white text-slate-900 shadow-[0_8px_16px_rgba(15,23,42,0.12)]'
                     : 'bg-transparent text-slate-600 hover:text-slate-900'
@@ -83,7 +83,7 @@ export function BrowseDronesPage({
               <button
                 type="button"
                 onClick={() => setActiveCategory('cargo')}
-                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition ${
+                className={`border-none px-5 py-2.5 rounded-full text-[0.85rem] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                   activeCategory === 'cargo'
                     ? 'bg-white text-slate-900 shadow-[0_8px_16px_rgba(15,23,42,0.12)]'
                     : 'bg-transparent text-slate-600 hover:text-slate-900'
@@ -107,7 +107,7 @@ export function BrowseDronesPage({
                     key={drone.id}
                     className={`rounded-2xl border p-5 bg-white shadow-[0_6px_16px_rgba(15,23,42,0.05)] flex flex-col gap-3.5 transition ${
                       isInCart
-                        ? 'border-emerald-300 bg-emerald-50 shadow-[0_18px_36px_rgba(16,185,129,0.22)] ring-2 ring-emerald-200'
+                        ? 'border-emerald-700 shadow-[0_18px_36px_rgba(15,23,42,0.16)] ring-1 ring-emerald-700'
                         : 'border-slate-200 hover:border-emerald-200 hover:shadow-[0_14px_28px_rgba(15,23,42,0.1)] hover:-translate-y-0.5'
                     }`}
                   >
@@ -120,7 +120,7 @@ export function BrowseDronesPage({
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         {isInCart && (
-                          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[0.7rem] font-semibold text-emerald-800">
+                          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[0.7rem] font-semibold text-emerald-900">
                             Selected
                           </span>
                         )}
@@ -143,7 +143,7 @@ export function BrowseDronesPage({
                       <div className="inline-flex items-center gap-2">
                         <button
                           type="button"
-                          className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900"
+                          className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
                           onClick={() => updateDays(drone.id, currentDays - 1)}
                           aria-label="Decrease rental days"
                         >
@@ -154,7 +154,7 @@ export function BrowseDronesPage({
                         </span>
                         <button
                           type="button"
-                          className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900"
+                          className="h-7 w-7 rounded-full border border-slate-200 bg-white font-bold text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50"
                           onClick={() => updateDays(drone.id, currentDays + 1)}
                           aria-label="Increase rental days"
                         >
@@ -166,10 +166,10 @@ export function BrowseDronesPage({
                       type="button"
                       onClick={() => onAddToCart(drone.id, currentDays)}
                       disabled={isInCart}
-                      className={`mt-auto rounded-xl px-3.5 py-2.5 text-[0.9rem] font-semibold transition ${
+                      className={`mt-auto rounded-xl px-3.5 py-2.5 text-[0.9rem] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                         isInCart
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200 cursor-default'
-                          : 'bg-emerald-600 text-white hover:opacity-90'
+                          ? 'bg-emerald-700 text-white border border-emerald-700 cursor-default'
+                          : 'bg-white text-emerald-700 border border-emerald-700 hover:bg-emerald-50'
                       }`}
                     >
                       {isInCart ? 'Selected ✓' : 'Select'}

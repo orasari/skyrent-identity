@@ -22,7 +22,7 @@ export function Layout({ left, right, showCartButton = false }: LayoutProps) {
               block: 'start',
             })
           }
-          className="fixed bottom-5 right-5 z-40 hidden max-[960px]:inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(16,185,129,0.35)] hover:bg-emerald-700"
+          className="fixed bottom-5 right-5 z-40 hidden max-[960px]:inline-flex items-center gap-2 rounded-full bg-emerald-700 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(15,23,42,0.28)] hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           View cart
         </button>

@@ -5,7 +5,12 @@ import { Layout } from '../components/Layout';
 import { RentalSummaryCard } from '../components/RentalSummaryCard';
 import type { CartItem } from '../types/cart';
 import type { Drone } from '../types/drone';
-import { formatAddressLine, formatCityLine, formatCurrency, formatDailyPrice } from '../utils/formatters';
+import {
+  formatAddressLine,
+  formatCityLine,
+  formatCurrency,
+  formatDailyPrice,
+} from '../utils/formatters';
 
 interface CheckoutPageProps {
   drones: Drone[];
@@ -64,7 +69,7 @@ export function CheckoutPage({
         <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
                 Step 4 of 4
               </p>
               <h2 className="text-2xl font-semibold">Checkout</h2>
@@ -79,13 +84,17 @@ export function CheckoutPage({
               {cartSummary.length > 0 ? (
                 <div className="mt-3 space-y-4 text-sm text-gray-700">
                   {cartSummary.map((item) => (
-                    <div key={item.droneId} className="border-b border-gray-100 pb-3 last:border-b-0 last:pb-0">
+                    <div
+                      key={item.droneId}
+                      className="border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="font-semibold text-gray-900">{item.drone.name}</div>
                         <div className="text-gray-600">{formatCurrency(item.total)}</div>
                       </div>
                       <div className="text-gray-600">
-                        {item.days} day{item.days === 1 ? '' : 's'} · {formatDailyPrice(item.drone.dailyPrice)}
+                        {item.days} day{item.days === 1 ? '' : 's'} ·{' '}
+                        {formatDailyPrice(item.drone.dailyPrice)}
                       </div>
                     </div>
                   ))}
@@ -112,18 +121,18 @@ export function CheckoutPage({
                 </div>
                 <div>
                   <span className="font-semibold text-gray-900">Address:</span>
-                  <div className="mt-1 text-sm text-gray-700">
-                    {addressLine || '—'}
-                  </div>
-                  <div className="text-sm text-gray-700">
-                    {cityLine || '—'}
-                  </div>
+                  <div className="mt-1 text-sm text-gray-700">{addressLine || '—'}</div>
+                  <div className="text-sm text-gray-700">{cityLine || '—'}</div>
                   <div className="text-sm text-gray-700">{countryLine || '—'}</div>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-900">Status:</span>{' '}
                   {identityResult ? (
-                    <span className={identityResult.status === 'verified' ? 'text-emerald-700' : 'text-rose-600'}>
+                    <span
+                      className={
+                        identityResult.status === 'verified' ? 'text-emerald-700' : 'text-rose-600'
+                      }
+                    >
                       {identityResult.status} (score {identityResult.score})
                     </span>
                   ) : (
@@ -147,9 +156,9 @@ export function CheckoutPage({
                 type="button"
                 onClick={() => setShowConfirmation(true)}
                 disabled={!isVerified}
-                className={`mt-4 w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                className={`mt-4 w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                   isVerified
-                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    ? 'bg-emerald-700 hover:bg-emerald-800'
                     : 'cursor-not-allowed bg-gray-300'
                 }`}
               >

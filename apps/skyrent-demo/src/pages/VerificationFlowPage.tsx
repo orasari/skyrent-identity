@@ -94,7 +94,7 @@ export function VerificationFlowPage({
         <div className="bg-white rounded-lg shadow-md p-5 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
                 Step 2 of 4
               </p>
               <h2 className="text-2xl font-semibold">Verification Flow</h2>
@@ -115,7 +115,10 @@ export function VerificationFlowPage({
                   title="Selfie Capture"
                   description="Take a quick selfie to verify identity."
                 >
-                  <SelfieCapture onCapture={onSelfieCapture} onCancel={() => onSelfieCapture(null)} />
+                  <SelfieCapture
+                    onCapture={onSelfieCapture}
+                    onCancel={() => onSelfieCapture(null)}
+                  />
                   <div className="mt-3 text-xs text-gray-500">
                     {selfie ? 'Selfie captured.' : 'No selfie captured yet.'}
                   </div>
@@ -160,9 +163,9 @@ export function VerificationFlowPage({
                 type="button"
                 onClick={() => setStep('phone')}
                 disabled={!canContinueFromSelfie}
-                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                   canContinueFromSelfie
-                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    ? 'bg-emerald-700 hover:bg-emerald-800'
                     : 'cursor-not-allowed bg-gray-300'
                 }`}
               >
@@ -175,9 +178,9 @@ export function VerificationFlowPage({
                 type="button"
                 onClick={() => setStep('address')}
                 disabled={!canContinueFromPhone}
-                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                   canContinueFromPhone
-                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    ? 'bg-emerald-700 hover:bg-emerald-800'
                     : 'cursor-not-allowed bg-gray-300'
                 }`}
               >
@@ -190,9 +193,9 @@ export function VerificationFlowPage({
                 type="button"
                 onClick={handleVerification}
                 disabled={!canContinueFromAddress || isVerifying}
-                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                   canContinueFromAddress && !isVerifying
-                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    ? 'bg-emerald-700 hover:bg-emerald-800'
                     : 'cursor-not-allowed bg-gray-300'
                 }`}
               >

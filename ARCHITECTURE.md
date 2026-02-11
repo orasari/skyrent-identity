@@ -14,6 +14,7 @@ This monorepo ships two deliverables:
 - **UI layout**: shared `Layout` component ensures consistent two-column flow across steps.
 - **Cart logic**: `useCart` hook centralizes cart state and actions.
 - **User prefs**: `useLocalStorage` stores client-only preferences (unit system).
+- **Styling boundaries**: Tailwind and app-specific styling live only in the demo app; the SDK sticks to framework-neutral inline styles and exposes `className` / `classNames` hooks so consumers can theme components in their own design systems.
 
 ## Data Flow
 

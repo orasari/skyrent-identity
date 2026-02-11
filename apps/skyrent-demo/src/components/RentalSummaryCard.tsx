@@ -53,12 +53,13 @@ export function RentalSummaryCard({
           <p className="text-[0.85rem] text-slate-400">No drones selected yet.</p>
         )}
         {cartSummary.map((item) => (
-          <div key={item.droneId} className="border border-slate-200 rounded-[14px] p-3 bg-slate-50 flex flex-col gap-2.5">
+          <div
+            key={item.droneId}
+            className="border border-slate-200 rounded-[14px] p-3 bg-slate-50 flex flex-col gap-2.5"
+          >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[0.9rem] font-semibold text-slate-900 m-0">
-                  {item.drone.name}
-                </p>
+                <p className="text-[0.9rem] font-semibold text-slate-900 m-0">{item.drone.name}</p>
                 <p className="text-[0.75rem] text-slate-500 mt-0.5">
                   {formatDailyPrice(item.drone.dailyPrice)}
                 </p>
@@ -67,7 +68,7 @@ export function RentalSummaryCard({
                 type="button"
                 onClick={() => onRemoveFromCart(item.droneId)}
                 disabled={!controlsEnabled}
-                className={`border-none bg-transparent text-[0.75rem] font-semibold ${
+                className={`border-none bg-transparent text-[0.75rem] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                   controlsEnabled
                     ? 'text-slate-400 cursor-pointer'
                     : 'text-slate-300 cursor-not-allowed'
@@ -81,7 +82,7 @@ export function RentalSummaryCard({
               <div className="inline-flex items-center gap-2">
                 <button
                   type="button"
-                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold ${
+                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                     controlsEnabled ? 'text-slate-900' : 'text-slate-300 cursor-not-allowed'
                   }`}
                   onClick={() => onUpdateCartDays(item.droneId, item.days - 1)}
@@ -95,7 +96,7 @@ export function RentalSummaryCard({
                 </span>
                 <button
                   type="button"
-                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold ${
+                  className={`h-7 w-7 rounded-full border border-slate-200 bg-white font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 ${
                     controlsEnabled ? 'text-slate-900' : 'text-slate-300 cursor-not-allowed'
                   }`}
                   onClick={() => onUpdateCartDays(item.droneId, item.days + 1)}
@@ -108,9 +109,7 @@ export function RentalSummaryCard({
             </div>
             <div className="flex justify-between text-[0.85rem] text-slate-700">
               <span className="text-slate-500">Line total</span>
-              <span className="font-semibold text-slate-900">
-                {formatCurrency(item.total)}
-              </span>
+              <span className="font-semibold text-slate-900">{formatCurrency(item.total)}</span>
             </div>
           </div>
         ))}
@@ -125,7 +124,7 @@ export function RentalSummaryCard({
             type="button"
             onClick={primaryAction.onClick}
             disabled={primaryAction.disabled}
-            className="border-none rounded-xl px-4 py-3 text-[0.95rem] font-bold text-white bg-emerald-600 cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed"
+            className="border-none rounded-xl px-4 py-3 text-[0.95rem] font-bold text-white bg-emerald-700 hover:bg-emerald-800 cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             {primaryAction.label}
           </button>

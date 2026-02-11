@@ -32,7 +32,7 @@ export function VerificationResultPage({
         <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
                 Step 3 of 4
               </p>
               <h2 className="text-2xl font-semibold">Verification Result</h2>
@@ -80,8 +80,11 @@ export function VerificationResultPage({
                     {formatAddressLine(result.address.street, '') || '—'}
                   </div>
                   <div className="text-sm text-gray-700">
-                    {formatCityLine(result.address.city, result.address.state, result.address.postalCode) ||
-                      '—'}
+                    {formatCityLine(
+                      result.address.city,
+                      result.address.state,
+                      result.address.postalCode
+                    ) || '—'}
                   </div>
                   <div className="text-sm text-gray-700">{result.address.country || '—'}</div>
                 </div>
@@ -97,7 +100,7 @@ export function VerificationResultPage({
               <button
                 type="button"
                 onClick={onRetry}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
                 Retry Verification
               </button>
@@ -106,9 +109,9 @@ export function VerificationResultPage({
               type="button"
               onClick={onContinue}
               disabled={!isVerified}
-              className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition ${
+              className={`rounded-lg px-4 py-2 text-sm font-semibold text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 isVerified
-                  ? 'bg-emerald-600 hover:bg-emerald-700'
+                  ? 'bg-emerald-700 hover:bg-emerald-800'
                   : 'cursor-not-allowed bg-gray-300'
               }`}
             >
