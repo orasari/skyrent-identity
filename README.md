@@ -341,6 +341,8 @@ pnpm --filter skyrent-demo exec tsc --noEmit
 - `pnpm dev` - Start development server
 - `pnpm build` - Build for production
 - `pnpm preview` - Preview production build
+- `pnpm test` - Run demo app tests
+- `pnpm test:watch` - Watch demo app tests
 
 ## Type Safety
 

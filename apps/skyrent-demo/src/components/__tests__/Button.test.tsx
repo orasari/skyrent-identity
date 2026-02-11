@@ -1,9 +1,13 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { Button } from '../Button';
 
 describe('Button', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it('renders the label', () => {
     render(<Button label="Click me" onClick={() => {}} />);
     expect(screen.getByRole('button', { name: 'Click me' })).not.toBeNull();
