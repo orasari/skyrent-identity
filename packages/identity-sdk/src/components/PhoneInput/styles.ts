@@ -21,7 +21,9 @@ export const styles = {
   select: {
     width: '13.75rem',
     borderRadius: '0.5rem',
-    border: '1px solid #d1d5db',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#d1d5db',
     backgroundColor: '#ffffff',
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
@@ -30,7 +32,9 @@ export const styles = {
   input: {
     flex: 1,
     borderRadius: '0.5rem',
-    border: '1px solid #d1d5db',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#d1d5db',
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
     color: '#374151',
@@ -72,12 +76,14 @@ export const styles = {
     color: '#6b7280',
   },
   resultValue: {
-    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontFamily:
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     fontSize: '0.95rem',
     color: '#111827',
   },
   resultValueMuted: {
-    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontFamily:
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     fontSize: '0.95rem',
     color: '#9ca3af',
   },
