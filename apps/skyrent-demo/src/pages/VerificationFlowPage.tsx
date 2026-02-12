@@ -94,9 +94,6 @@ export function VerificationFlowPage({
         <div className="bg-white rounded-lg shadow-md p-5 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Step 2 of 4
-              </p>
               <h2 className="text-2xl font-semibold">Verification Flow</h2>
               <p className="text-gray-600">
                 {selectedDrone
