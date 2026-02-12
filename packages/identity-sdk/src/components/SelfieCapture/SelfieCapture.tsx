@@ -52,6 +52,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
   };
 
   const handleRetake = () => {
+    onCapture(null);
     retake();
   };
 

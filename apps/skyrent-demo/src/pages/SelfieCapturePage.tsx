@@ -9,7 +9,7 @@ interface SelfieCapturePageProps {
 export function SelfieCapturePage({ onBack }: SelfieCapturePageProps) {
   const [selfieData, setSelfieData] = useState<string | null>(null);
 
-  const handleSelfieCapture = (imageData: string) => {
+  const handleSelfieCapture = (imageData: string | null) => {
     setSelfieData(imageData);
   };
 
@@ -36,11 +36,7 @@ export function SelfieCapturePage({ onBack }: SelfieCapturePageProps) {
         <div className="mt-4">
           <h3 className="text-xl font-medium mb-4">Captured Selfie Preview</h3>
           <div className="max-w-md mx-auto">
-            <img
-              src={selfieData}
-              alt="Captured selfie"
-              className="w-full rounded-lg shadow-lg"
-            />
+            <img src={selfieData} alt="Captured selfie" className="w-full rounded-lg shadow-lg" />
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded">
               <p className="text-green-800 font-medium">✅ Selfie captured successfully!</p>
               <p className="text-sm text-green-700 mt-1">

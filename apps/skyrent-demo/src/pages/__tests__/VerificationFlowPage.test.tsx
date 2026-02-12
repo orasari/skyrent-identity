@@ -26,7 +26,7 @@ const getIdentityDataMock = vi.hoisted(() => vi.fn());
 vi.mock('@skyrent/identity-sdk', () => ({
   getIdentityData: getIdentityDataMock,
   // Replace SDK components with simple buttons to drive the flow deterministically.
-  SelfieCapture: ({ onCapture }: { onCapture: (value: string) => void }) => (
+  SelfieCapture: ({ onCapture }: { onCapture: (value: string | null) => void }) => (
     <button type="button" onClick={() => onCapture('data:image/jpeg;base64,abc')}>
       Capture
     </button>

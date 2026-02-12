@@ -1,9 +1,9 @@
 export interface SelfieCaptureProps {
   /**
-   * Callback fired when a selfie is successfully captured
-   * @param imageData - Base64 encoded image data URL
+   * Callback fired when a selfie is captured or cleared.
+   * @param imageData - Base64 encoded image data URL, or null when the user retakes (clears the capture)
    */
-  onCapture: (imageData: string) => void;
+  onCapture: (imageData: string | null) => void;
 
   /**
    * Callback fired when the user cancels capture
