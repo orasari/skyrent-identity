@@ -3,7 +3,7 @@ import { CameraError } from './types';
 /**
  * Structured UI copy for camera errors in the selfie flow.
  */
-type ErrorDetails = {
+export type ErrorDetails = {
   title: string;
   message: string;
   steps: string[];

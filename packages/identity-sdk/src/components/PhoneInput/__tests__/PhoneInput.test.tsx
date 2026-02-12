@@ -1,7 +1,12 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach } from 'vitest';
 import { describe, expect, it, vi } from 'vitest';
 import { PhoneInput } from '../PhoneInput';
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('PhoneInput', () => {
   it('normalizes input to E.164 format', () => {

@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { SelfieCaptureProps } from './types';
 import { getCameraErrorDetails } from './errorDetails';
+import { SelfieCaptureControls } from './SelfieCaptureControls';
+import { SelfieCaptureError } from './SelfieCaptureError';
+import { SelfieCaptureInstructions } from './SelfieCaptureInstructions';
 import { useCamera } from './useCamera';
 import { styles } from './styles';
 
@@ -63,15 +66,7 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
 
   return (
     <div style={{ ...styles.container, ...(className ? {} : {}) }} className={className}>
-      {/* Instructions */}
-      {!state.isCaptured && (
-        <div style={styles.instructions}>
-          <p>
-            <strong>Position your face inside the oval guide</strong>
-          </p>
-          <p>Make sure your face is clearly visible and well-lit</p>
-        </div>
-      )}
+      {!state.isCaptured && <SelfieCaptureInstructions />}
 
       {/* Video/Preview Container */}
       <div style={styles.videoContainer}>
@@ -121,71 +116,16 @@ export const SelfieCapture: React.FC<SelfieCaptureProps> = ({
 
       {/* Canvas stays mounted to preserve captured frame */}
 
-      {/* Controls */}
-      <div style={styles.controls}>
-        {state.isStreaming && !state.isCaptured && (
-          <>
-            <button
-              style={{ ...styles.button, ...styles.primaryButton }}
-              onClick={handleCapture}
-              type="button"
-            >
-              Capture Photo
-            </button>
-            <button
-              style={{ ...styles.button, ...styles.secondaryButton }}
-              onClick={handleCancel}
-              type="button"
-            >
-              Cancel
-            </button>
-          </>
-        )}
+      <SelfieCaptureControls
+        state={state}
+        errorDetails={errorDetails}
+        onCapture={handleCapture}
+        onRetake={handleRetake}
+        onCancel={handleCancel}
+        onStartCamera={startCamera}
+      />
 
-        {state.isCaptured && (
-          <button
-            style={{ ...styles.button, ...styles.secondaryButton }}
-            onClick={handleRetake}
-            type="button"
-          >
-            ↻ Retake
-          </button>
-        )}
-
-        {!state.isStreaming && !state.isCaptured && !state.isLoading && !state.error && (
-          <button
-            style={{ ...styles.button, ...styles.primaryButton }}
-            onClick={startCamera}
-            type="button"
-          >
-            Start Camera
-          </button>
-        )}
-
-        {state.error && (
-          <button
-            style={{ ...styles.button, ...styles.primaryButton }}
-            onClick={startCamera}
-            type="button"
-          >
-            {errorDetails?.buttonLabel ?? 'Try Again'}
-          </button>
-        )}
-      </div>
-
-      {state.error && errorDetails && (
-        <div style={styles.errorContainer} role="alert">
-          <strong>{errorDetails.title}</strong>
-          <p style={{ margin: '0.5rem 0 0' }}>{errorDetails.message}</p>
-          <ul style={{ margin: '0.75rem 0 0', paddingLeft: '1.1rem', textAlign: 'left' }}>
-            {errorDetails.steps.map((step) => (
-              <li key={step} style={{ marginBottom: '0.35rem' }}>
-                {step}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <SelfieCaptureError errorDetails={errorDetails} hasError={Boolean(state.error)} />
     </div>
   );
 };
